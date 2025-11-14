@@ -73,10 +73,10 @@ $a_0$ and $\epsilon_{\text{Ne}-\text{Ne}}$ = 0.000112991 $E_\text{h}$
 Read input values from a file structured as follows (with distnces in Bohr and energies in Hartree):
 
 ```
-600 0.2                                     ! nk, tau
+6000 1.0                                     ! nk, tau
 5.2186, 0.000112991                         ! sigma, epsilon
 2                                           ! n, number of atoms
-20.1797 0.0  0.0  4.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz
+20.1797 0.0  0.0  8.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz
 20.1797 0.0  0.0  0.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz 
 ```
 
@@ -208,18 +208,35 @@ The XYZ format for storing trajectories is:
 <number of atoms>
 <time at k = 1>
 <atom 1 symbol> <x> <y> <z>
-<aotm 2 symbol> <x> <y> <z>
+<atom 2 symbol> <x> <y> <z>
 [...]
-<aotm N symbol> <x> <y> <z>
+<atom N symbol> <x> <y> <z>
 <number of atoms>
 <time at k = 2>
 <atom 1 symbol> <x> <y> <z>
-<aotm 2 symbol> <x> <y> <z>
+<atom 2 symbol> <x> <y> <z>
 [...]
-<aotm N symbol> <x> <y> <z>
+<atom N symbol> <x> <y> <z>
 [...]
 ```
 where coordinates are given in Angstrom.
 Note that strictly speaking the lines `<time at k = ...>` would be
 comment lines in ordinary XYZ format but we will use them to store
 the value of the time at each iteration.
+
+## Exercise 2.1
+
+WORK IN PROGRESS
+
+Check the convergence of your trajectory with respect to the
+time-step value. How small has the time step to be in order to get a
+trajectory converged within [...] after [...] of simulation?
+
+## Guidelines and tips
+
+To check the convergence, 'nest' your Velocity Verlet algorithm
+inside a loop construct that, at each iteration, halves the timestep,
+calculates the final positions after [...] of simulation, and checks the
+convergence of these with respect to the values obtained in the
+previous iteration.
+
