@@ -71,10 +71,14 @@ $a_0$ and $\epsilon_{\text{Ne}-\text{Ne}}$ = 0.000112991 $E_\text{h}$
 (2013)](https://doi.org/10.1063/1.4796144)).
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Read input values from a file structured as follows (with distances in Bohr and energies in Hartree):
 =======
 Read input values from a file structured as follows (with distnaces in Bohr and energies in Hartree):
 >>>>>>> c19f1f9 (live fix)
+=======
+Read input values from a file structured as follows (with distances in Bohr and energies in Hartree):
+>>>>>>> 73c064e (Update verlet-2.md "distnaces")
 
 ```
 6000 1.0                                    ! nk, tau
