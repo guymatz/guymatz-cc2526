@@ -1,0 +1,5 @@
+6000 1.0                                     ! nk, tau
+5.2186, 0.000112991                         ! sigma, epsilon
+2                                           ! n, number of atoms
+20.1797 0.0  0.0  8.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz
+20.1797 0.0  0.0  0.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz 
