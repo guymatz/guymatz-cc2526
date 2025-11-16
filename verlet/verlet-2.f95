@@ -88,6 +88,7 @@ program main
     a_z_b(i) = a_z_b(i-1) + tau*v_x_b(i-1) + tau**2 * f_x_b(i-1) / (2*p_b(1))
 
     ! evaluate f on particle a
+    !print *, 'lj x: ', epsilon, sigma, p_a, p_b, 1
     f_x_a(i) = lj(epsilon, sigma, p_a, p_b, 1)
     f_x_a(i) = lj(epsilon, sigma, p_a, p_b, 2)
     f_x_a(i) = lj(epsilon, sigma, p_a, p_b, 3)
