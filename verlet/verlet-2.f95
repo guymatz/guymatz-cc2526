@@ -4,22 +4,26 @@ program main
     use kinds, ONLY: wp => dp
     implicit none
 
+    real (KIND=wp), DIMENSION(:,:), ALLOCATABLE :: x, v, f, fnext
     integer :: nk
     real :: tau
     real :: sigma
     real :: epsilon
-    integer :: num_rows
+    real :: tmp
+    !integer :: num_rows
     integer :: num_atoms
-    real :: m, x, y, z, vx, vy, vz
-    integer :: i, j, k
+    real (KIND=wp) :: mass, ax, ay, az, vx, vy, vz
+    ! for storing intermediate values
+    integer :: i!, j, k
     !integer, parameter:: wp = SELECTED_REAL_KIND (p = 13, r = 300)
     integer, parameter:: steps = 10
-    real (KIND = wp), DIMENSION(7) :: p_a, p_b ! our two particles
-  ! lists of stuff?
-    real (KIND = wp), dimension(steps+1):: a_x_a, a_y_a, a_z_a, a_x_b, a_y_b, a_z_b
-    real (KIND = wp), dimension(steps+1):: v_x_a, v_y_a, v_z_a, v_x_b, v_y_b, v_z_b
-    real (KIND = wp), dimension(steps+1):: f_x_a, f_y_a, f_z_a, f_x_b, f_y_b, f_z_b
+    !real (KIND = wp), DIMENSION(7) :: p_a, p_b ! our two particles
 
+
+    allocate(x(2,3))
+    allocate(v(2,3))
+    allocate(f(2,3))
+    allocate(fnext(2,3))
     open (UNIT=11, FILE="verlet-2.dat", STATUS="old", ACTION="read")
     ! num_rows = count_lines(11)
     read(unit = 11, FMT=*) nk, tau
@@ -28,82 +32,73 @@ program main
     !print *, nk, tau, sigma, epsilon, num_atoms
     print *, num_atoms
 
-    read(unit = 11, FMT=*) m, x, y, z, vx, vy, vz
-    p_a = (/ m, x, y, z, vx, vy, vz /)
-    read(unit = 11, FMT=*) m, x, y, z, vx, vy, vz
-    p_b = (/ m, x, y, z, vx, vy, vz /)
+    ! read in info for particles a & b
+    read(unit = 11, FMT=*) mass, ax, ay, az, vx, vy, vz
+    x(1,:) = (/ 0.0, 1.1, 2.2 /)
+    !x(1,:) = (/ ax, ay, az /)
+    v(1,:) = (/ vx, vy, vz /)
+    read(unit = 11, FMT=*) mass, ax, ay, az, vx, vy, vz
+    x(2,:) = (/ ax, ay, az /)
+    v(2,:) = (/ vx, vy, vz /)
     close(unit = 11) 
 !    print *, 'Particle A:'
 !    print *, p_a
 !    print *, 'Particle B:'
 !    print *, p_b
 !    print *
-
-
-    ! Initial position for particle a
-    a_x_a(1) = p_a(2)
-    a_y_a(1) = p_a(3)
-    a_z_a(1) = p_a(4)
-    ! Initial Velocity for particle a
-    v_x_a(1) = p_a(5)
-    v_y_a(1) = p_a(6)
-    v_z_a(1) = p_a(7)
-
     ! Initial Force for particle a
-    f_x_a(1) = 0.0_wp
-    f_y_a(1) = 0.0_wp
-    f_z_a(1) = 0.0_wp
-
-    ! same for particle b
-    ! Initial position for particle a
-    a_x_b(1) = p_b(2)
-    a_y_b(1) = p_b(3)
-    a_z_b(1) = p_b(4)
-    ! Initial Velocity for particle a
-    v_x_b(1) = p_b(5)
-    v_y_b(1) = p_b(6)
-    v_z_b(1) = p_b(7)
-
-    ! Initial Force for particle a
-    f_x_b(1) = 0.0_wp
-    f_y_b(1) = 0.0_wp
-    f_z_b(1) = 0.0_wp
+    f(1,:) = (/ 0.0_wp, 0.0_wp, 0.0_wp /)
+    f(2,:) = (/ 0.0_wp, 0.0_wp, 0.0_wp /)
 
 
     print *, '1'
-    print *, 'a', a_x_a(1), a_y_a(1), a_z_a(1)
-    print *, 'b', a_x_b(1), a_y_b(1), a_z_b(1)
+    print *, 'a', x(1, :)
+    print *, 'b', x(2, :)
 
   do i = 2, steps, 1
-    print *, i
-    print *, 'a', a_x_a(i), a_y_a(i), a_z_a(i)
-    print *, 'b', a_x_b(i), a_y_b(i), a_z_b(i)
     ! \alpha_{k+1}
-    a_x_a(i) = a_x_a(i-1) + tau*v_x_a(i-1) + tau**2 * f_x_a(i-1) / (2*p_a(1))
-    a_y_a(i) = a_y_a(i-1) + tau*v_x_a(i-1) + tau**2 * f_x_a(i-1) / (2*p_a(1))
-    a_z_a(i) = a_z_a(i-1) + tau*v_x_a(i-1) + tau**2 * f_x_a(i-1) / (2*p_a(1))
+    x(1,1) = x(1,1) + tau*v(1,1) + tau**2 * f(1,1) / (2*x(1,1))
+    x(1,2) = x(1,2) + tau*v(1,2) + tau**2 * f(1,2) / (2*x(1,2))
+    x(1,3) = x(1,3) + tau*v(1,3) + tau**2 * f(1,3) / (2*x(1,3))
     ! particle b
-    a_x_b(i) = a_x_b(i-1) + tau*v_x_b(i-1) + tau**2 * f_x_b(i-1) / (2*p_b(1))
-    a_y_b(i) = a_y_b(i-1) + tau*v_x_b(i-1) + tau**2 * f_x_b(i-1) / (2*p_b(1))
-    a_z_b(i) = a_z_b(i-1) + tau*v_x_b(i-1) + tau**2 * f_x_b(i-1) / (2*p_b(1))
+    x(2,1) = x(2,1) + tau*v(2,1) + tau**2 * f(2,1) / (2*x(2,1))
+    x(2,2) = x(2,2) + tau*v(2,2) + tau**2 * f(2,2) / (2*x(2,2))
+    x(2,3) = x(2,3) + tau*v(2,3) + tau**2 * f(2,3) / (2*x(2,3))
+    print *, 'x 1', x(1, 1),  x(1, 2),  x(1, 3)
+    print *, 'x 2', x(2, 1),  x(2, 2),  x(2, 3)
 
     ! evaluate f on particle a
     !print *, 'lj x: ', epsilon, sigma, p_a, p_b, 1
-    f_x_a(i) = lj(epsilon, sigma, p_a, p_b, 1)
-    f_x_a(i) = lj(epsilon, sigma, p_a, p_b, 2)
-    f_x_a(i) = lj(epsilon, sigma, p_a, p_b, 3)
-
-    ! evaluate f on particle b
-    f_x_b(i) = lj(epsilon, sigma, p_b, p_a, 1)
-    f_x_b(i) = lj(epsilon, sigma, p_b, p_a, 2)
-    f_x_b(i) = lj(epsilon, sigma, p_b, p_a, 3)
+    fnext(1,1) = lj(epsilon, sigma, x(1,:), x(2,:), 1)
+    fnext(1,2) = lj(epsilon, sigma, x(1,:), x(2,:), 2)
+    fnext(1,3) = lj(epsilon, sigma, x(1,:), x(2,:), 3)
+    ! evaluate fnext on particle b
+    fnext(2,1) = lj(epsilon, sigma, x(2,:), x(1,:), 1)
+    fnext(2,2) = lj(epsilon, sigma, x(2,:), x(1,:), 2)
+    fnext(2,3) = lj(epsilon, sigma, x(2,:), x(1,:), 3)
 
     ! v_{k+1}
-    v_x_a(i) = v_x_a(i-1) + tau/2*p_a(1) * (f_x_a(i-1) + f_x_a(i) )
-    v_x_a(i) = v_x_a(i-1) + tau/2*p_a(1) * (f_x_a(i-1) + f_x_a(i) )
-    v_x_a(i) = v_x_a(i-1) + tau/2*p_a(1) * (f_x_a(i-1) + f_x_a(i) )
+    v(1,1) = v(1,1) + tau/2*x(1,1) * (f(1,1) + fnext(1,1) )
+    v(1,2) = v(1,2) + tau/2*x(1,2) * (f(1,2) + fnext(1,2) )
+    v(1,3) = v(1,3) + tau/2*x(1,3) * (f(1,3) + fnext(1,3) )
+    v(2,1) = v(2,1) + tau/2*x(2,1) * (f(2,1) + fnext(2,1) )
+    v(2,2) = v(2,2) + tau/2*x(2,2) * (f(2,2) + fnext(2,2) )
+    v(2,3) = v(2,3) + tau/2*x(2,3) * (f(2,3) + fnext(2,3) )
+
+    f(1,1) = fnext(1,1)
+    f(1,2) = fnext(1,2)
+    f(1,3) = fnext(1,3)
+    ! evaluate fnext on particle b
+    f(2,1) = fnext(2,1)
+    f(2,2) = fnext(2,2)
+    f(2,3) = fnext(2,3)
   end do
-!  print *, a_x_a(i), a_y_a(i), a_z_a(i)
+  print *, 'p1: ', x(1, :)
+  print *, 'p2: ', x(2, :)
+deallocate(x)
+deallocate(v)
+deallocate(f)
+deallocate(fnext)
 
 ! Write a Fortran program that implements the Verlet algorithm with $k$ ranging
 ! from 1 to 10 and $\tau$ = 0.2 s for one particle of mass 1 kg in 3D space subject
