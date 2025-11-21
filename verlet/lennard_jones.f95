@@ -2,7 +2,7 @@ module lennard_jones
   USE kinds, ONLY: wp => dp
   implicit none
   
-  PUBLIC :: lj
+  PUBLIC :: lj, v_prime_lj
 
   CONTAINS
 
@@ -10,7 +10,7 @@ module lennard_jones
     real, intent(in) :: epsilon, sigma
     real, intent(in) :: r_ab
     !real, intent(out) :: v_prime
-    v_prime = 4 * epsilon * (-12 * sigma**12 / r_ab**13 + 6 * sigma**6 / r_ab**7 )
+    v_prime = 4.0_wp * epsilon * (-12.0_wp * sigma**12.0_wp / r_ab**13.0_wp + 6.0_wp* sigma**6.0_wp / r_ab**7.0_wp)
   end function v_prime_lj
 
   logical function realeq(a, b, tol)
@@ -42,6 +42,7 @@ module lennard_jones
     y_ab = particle_a(2) - particle_b(2)
     z_ab = particle_a(3) - particle_b(3)
     axes = (/ x_ab, y_ab, z_ab /)
+    !print *, 'axes: ', axes
     r_ab = sqrt( x_ab**2 + y_ab**2 + z_ab**2 )
     if ( is0( axes(axis) ) .or. is0( r_ab ) ) then
       f_a = 0
