@@ -7,18 +7,21 @@ program main
     real (KIND=wp), DIMENSION(:,:), ALLOCATABLE :: x, f, fnext
     real :: sigma = 5.2186_wp
     real :: epsilon = 0.000112991_wp
-    real :: r_ab = 8.0_wp
+    real :: r = 8.0_wp
+    real (KIND=wp), DIMENSION(2,3) :: lj_out
     allocate(x(2,3))
 
-    print *, 'vplj: 2.209358416015258e-05 = ', v_prime_lj(epsilon, sigma, r_ab)
+    print *, 'vplj: 2.209358416015258e-05 = ', v_prime_lj(epsilon, sigma, r)
 
     x(1, :) = (/ 0.0_wp, 0.0_wp, 8.0_wp /)
     x(2, :) = (/ 0.0_wp, 0.0_wp, 0.0_wp /)
 
     print *, 'x(1, :) = ', x(1,:)
     print *, 'x(2, :) = ', x(2,:)
-    print *, 'fnext: -2.209358416015258e-05 = ', lj(epsilon, sigma, x(1,:), x(2,:), 3)
-    print *, 'fnext: 2.209358416015258e-05 = ', lj(epsilon, sigma, x(2,:), x(1,:), 3)
+
+    lj_out = lj(epsilon, sigma, x)
+    print *, 'fnext: -2.209358416015258e-05 = ', lj_out(1,3)
+    print *, 'fnext: 2.209358416015258e-05 = ', lj_out(2,3)
 
     return
 !    !integer :: num_rows

@@ -62,12 +62,7 @@ program main
     print *, 'b', x(2, :)
 
   do i = 1, steps, 1
-    f(1,1) = lj(epsilon, sigma, x(1,:), x(2,:), 1)
-    f(1,2) = lj(epsilon, sigma, x(1,:), x(2,:), 2)
-    f(1,3) = lj(epsilon, sigma, x(1,:), x(2,:), 3)
-    f(2,1) = lj(epsilon, sigma, x(2,:), x(1,:), 1)
-    f(2,2) = lj(epsilon, sigma, x(2,:), x(1,:), 2)
-    f(2,3) = lj(epsilon, sigma, x(2,:), x(1,:), 3)
+    f = lj(epsilon, sigma, x)
     ! \alpha_{k+1}
     x(1,1) = x(1,1) + tau*v(1,1) + tau**2 * f(1,1) / (2*mass(1, 1))
     x(1,2) = x(1,2) + tau*v(1,2) + tau**2 * f(1,2) / (2*mass(1, 1))
@@ -80,13 +75,7 @@ program main
     !print *, 'x 2', i, x(2, 1),  x(2, 2),  x(2, 3)
 
     ! evaluate fnext on particle a
-    fnext(1,1) = lj(epsilon, sigma, x(1,:), x(2,:), 1)
-    fnext(1,2) = lj(epsilon, sigma, x(1,:), x(2,:), 2)
-    fnext(1,3) = lj(epsilon, sigma, x(1,:), x(2,:), 3)
-    ! evaluate fnext on particle b
-    fnext(2,1) = lj(epsilon, sigma, x(2,:), x(1,:), 1)
-    fnext(2,2) = lj(epsilon, sigma, x(2,:), x(1,:), 2)
-    fnext(2,3) = lj(epsilon, sigma, x(2,:), x(1,:), 3)
+    fnext = lj(epsilon, sigma, x)
 
     ! v_{k+1}
     v(1,1) = v(1,1) + tau/(2*mass(1,1)) * (f(1,1) + fnext(1,1) )
