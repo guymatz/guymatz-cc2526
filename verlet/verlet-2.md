@@ -70,16 +70,7 @@ $a_0$ and $\epsilon_{\text{Ne}-\text{Ne}}$ = 0.000112991 $E_\text{h}$
 (taken from [JCP 138, 134502
 (2013)](https://doi.org/10.1063/1.4796144)).
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 Read input values from a file structured as follows (with distances in Bohr and energies in Hartree):
-=======
-Read input values from a file structured as follows (with distnaces in Bohr and energies in Hartree):
->>>>>>> c19f1f9 (live fix)
-=======
-Read input values from a file structured as follows (with distances in Bohr and energies in Hartree):
->>>>>>> 73c064e (Update verlet-2.md "distnaces")
-
 ```
 6000 1.0                                    ! nk, tau
 5.2186 0.000112991                          ! sigma, epsilon
@@ -247,13 +238,6 @@ IF ( MOD(k,100) .EQ. 0 ) PRINT "(I7, 3F13.8)", k, ekin, epot, etot
 where `k` is the iteration counter. Note that here we are now specifying the desired printing format, requesting to print an integer with 7 characters and 3 reals. Each real is printed with a total number of characters equal to 13 (including the decimal separator `.`), and 8 decimal digits.
 
 ## Results
-After `6000` iterations with time step `1.0`, the final `z` of atom 1
-is `7.9745826607` and the initial total energy (`-0.0000321414`) is
-conserved up to the fourth significant digit (displays slight
-oscillations).
+After `6000` iterations with time step `1.0`, the final `z` of atom 1 is `8.0614` and the total energy varies from `-0.00003214` (`k=100`) to `-0.00002949` (`k=6000`).
 
-After `600000` iterations with time step `0.01`, the final `z` of
-atom 1 is `7.9745833915` and the initial total energy
-(`-0.0000321414`) is
-conserved.
-
+After `600000` iterations with time step `0.01`, the final `z` of atom 1 is `7.9756` and the total energy varies from `-0.00003214` (`k=100`) to `-0.00003212` (`k=600000`).
