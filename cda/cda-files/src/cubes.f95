@@ -20,7 +20,6 @@ MODULE cubes
             cube_int, &
             cube_cdz, &
             cube_del, &
-            cube_gen_charge_redistribution, &
             cube_print
 
   INTERFACE OPERATOR(+)
@@ -70,7 +69,6 @@ MODULE cubes
     print *, 'Title: ', c%data_title
     print *, 'Desc.: ', c%data_desc
     print *, 'Num Atoms: ', c%natom
-    print *, 'Atoms:'
     do i = 1, c%natom, 1
         print *, c%zahl(i), c%chrg(i), c%x(i), c%y(i), c%z(i)
     end do
@@ -80,19 +78,56 @@ MODULE cubes
     end do
   end subroutine cube_print
 
-  FUNCTION cube_add (mycube1, mycube2)
+  FUNCTION cube_add (c1, c2)
+    integer :: i
     TYPE(cube) :: cube_add
-    TYPE(cube), INTENT(IN) :: mycube1, mycube2
-    allocate(cube_add%array(size(mycube1%array)))
-    cube_add%array = mycube1%array + mycube2%array
+    TYPE(cube), INTENT(IN) :: c1, c2
+    allocate(cube_add%array(size(c1%array)))
+    allocate(cube_add%zahl(size(c1%zahl) + size(c2%zahl)))
+    allocate(cube_add%chrg(size(c1%chrg) + size(c2%chrg)))
+    allocate(cube_add%x(size(c1%x) + size(c2%x)))
+    allocate(cube_add%y(size(c1%y) + size(c2%y)))
+    allocate(cube_add%z(size(c1%z) + size(c2%z)))
+    cube_add%array = c1%array + c2%array
+    cube_add%data_title = c1%data_title // ' + ' // c2%data_title 
+    cube_add%data_desc = c1%data_desc // ' + ' // c2%data_desc 
+    !real (KIND=wp) :: xmin, ymin, zmin, dx, dy, dz
+    allocate(cube_add%zahl(size(c1%zahl) + size(c2%zahl)))
+    print *, 'Length of new zahl: ', size(cube_add%zahl)
+    do i = 1, size(c1%zahl), 1
+        cube_add%zahl(i) = c1%zahl(i)
+    end do
+    do i = 1, size(c2%zahl), 1
+        cube_add%zahl(i + size(c1%zahl)) = c2%zahl(i)
+    end do
+    cube_add%chrg(i) = c1%chrg(i) + c2%chrg(i)
+    cube_add%x(i) = c1%x(i) + c2%x(i)
+    cube_add%y(i) = c1%y(i) + c2%y(i)
+    cube_add%z(i) = c1%z(i) + c2%z(i)
+
+    cube_add%nx = c1%nx
+    cube_add%ny = c1%ny
+    cube_add%nz = c1%nz
+    cube_add%natom = c1%natom  + c2%natom  
+    !integer, DIMENSION(:), POINTER :: zahl
+    !real (KIND=wp), DIMENSION(:), POINTER :: chrg, x, y, z
+    !real (KIND=wp), DIMENSION(:), POINTER :: array
+    print *, 'ADDED ', cube_add%data_title
   END FUNCTION cube_add
 
 
-  FUNCTION cube_sub (mycube1, mycube2)
+  FUNCTION cube_sub (c1, c2)
     TYPE(cube) :: cube_sub
-    TYPE(cube), INTENT(IN) :: mycube1, mycube2
-    allocate(cube_sub%array(size(mycube1%array)))
-    cube_sub%array = mycube1%array - mycube2%array
+    TYPE(cube), INTENT(IN) :: c1, c2
+    allocate(cube_sub%array(size(c1%array)))
+    cube_sub%data_title = c1%data_title // ' - ' // c2%data_title 
+    cube_sub%data_desc = c1%data_desc // ' - ' // c2%data_desc 
+    cube_sub%array = c1%array - c2%array
+    cube_sub%natom = c1%natom  - c2%natom  
+    cube_sub%nx = c1%nx
+    cube_sub%ny = c1%ny
+    cube_sub%nz = c1%nz
+    print *, 'Subbed'
   END FUNCTION cube_sub
 
 
@@ -110,18 +145,32 @@ MODULE cubes
 
   ! Take in input a cube variable and returning a one-dimensional array
   ! containing the values of Δq
-  SUBROUTINE cube_cdz (mycube)
-    TYPE (cube), INTENT(IN) :: mycube
-    ! ...
-  END SUBROUTINE cube_cdz
+!  SUBROUTINE cube_cdz (mycube)
+!    TYPE (cube), INTENT(IN) :: mycube
+!    real, DIMENSION(size(mycube%array)) :: cube_cdz
+!  END SUBROUTINE cube_cdz
 
-  ! Take 4 cubes - a reference, A, B, & AB  - and set the reference%array
-  ! to AB%array - A%array - B%array
-  SUBROUTINE cube_gen_charge_redistribution (delta, AB, A, B)
-    TYPE (cube), INTENT(IN) :: AB, A, B
-    TYPE (cube), INTENT(OUT) :: delta
-    allocate(delta%array(size(AB%array)))
-    delta%array = AB%array - A%array - B%array
-  END SUBROUTINE cube_gen_charge_redistribution
+
+  FUNCTION cube_cdz (drho)
+    TYPE(cube), INTENT(IN) :: drho
+    real, DIMENSION(size(drho%array)) :: cube_cdz
+    real, DIMENSION(drho%nx , drho%ny , drho%nz) :: xyz
+    integer :: i, x, y, z
+    i = 1
+    print *, 'IN cube_cdz: (', drho%nx, ', ', drho%ny, ', ', drho%nz, ')'
+    !print *, 'HERE'
+    do x = 1, drho%nx, 1
+        do y = 1, drho%ny, 1
+            do z = 1, drho%nz, 1
+                xyz(x, y, z) = drho%array(i)
+                i = i + 1
+                if (MOD(i, 100000) .EQ. 0) then
+                    print *, i, ': (', x, ', ', y, ', ', z, ') = ', drho%array(i)
+                end if
+            end do
+        end do
+    end do
+    cube_cdz = drho%array
+  END FUNCTION cube_cdz
 
 END MODULE cubes
