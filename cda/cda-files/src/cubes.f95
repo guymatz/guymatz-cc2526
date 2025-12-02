@@ -96,7 +96,7 @@ MODULE cubes
     cube_add%dy = c1%dy
     cube_add%dz = c1%dz
     allocate(cube_add%zahl(size(c1%zahl) + size(c2%zahl)))
-    print *, 'Length of new zahl: ', size(cube_add%zahl)
+    !print *, 'Length of new zahl: ', size(cube_add%zahl)
     do i = 1, size(c1%zahl), 1
         cube_add%zahl(i) = c1%zahl(i)
     end do
@@ -115,7 +115,7 @@ MODULE cubes
     !integer, DIMENSION(:), POINTER :: zahl
     !real (KIND=wp), DIMENSION(:), POINTER :: chrg, x, y, z
     !real (KIND=wp), DIMENSION(:), POINTER :: array
-    print *, 'ADDED ', cube_add%data_title
+    !print *, 'ADDED ', cube_add%data_title
   END FUNCTION cube_add
 
 
@@ -134,7 +134,7 @@ MODULE cubes
     cube_sub%dx = c1%dx
     cube_sub%dy = c1%dy
     cube_sub%dz = c1%dz
-    print *, 'Subbed'
+    !print *, 'Subbed'
   END FUNCTION cube_sub
 
 
@@ -145,12 +145,12 @@ MODULE cubes
     integer, dimension(3) :: dim
     integer :: xdim, ydim, zdim, x, y, z
     real :: xy_total, xyz_total
-    print *, 'Deltas: ', dx, dy, dz
+    !print *, 'Deltas: ', dx, dy, dz
     dim = shape(xyz)
     xdim = dim(1)
     ydim = dim(2)
     zdim = dim(3)
-    print *, 'DIM of xyz(z): ', xdim, ydim, zdim
+    !print *, 'DIM of xyz(z): ', xdim, ydim, zdim
     xyz_total = 0
     do z = 1, zdim, 1
         xy_total = 0
@@ -186,8 +186,8 @@ MODULE cubes
     real :: integral
     integer :: i, x, y, z
     i = 1
-    print *, 'IN cube_cdz: (', drho%nx, ', ', drho%ny, ', ', drho%nz, ')'
-    print *, 'IN cube_cdz: (', drho%dx, ', ', drho%dy, ', ', drho%dz, ')'
+    !print *, 'IN cube_cdz: (', drho%nx, ', ', drho%ny, ', ', drho%nz, ')'
+    !print *, 'IN cube_cdz: (', drho%dx, ', ', drho%dy, ', ', drho%dz, ')'
     !print *, 'HERE'
     do x = 1, drho%nx, 1
         do y = 1, drho%ny, 1
@@ -195,7 +195,7 @@ MODULE cubes
                 xyz(x, y, z) = drho%array(i)
                 i = i + 1
                 if (MOD(i, 100000) .EQ. 0) then
-                    print *, i, ': (', x, ', ', y, ', ', z, ') = ', drho%array(i)
+                    !print *, i, ': (', x, ', ', y, ', ', z, ') = ', drho%array(i)
                 end if
             end do
         end do
