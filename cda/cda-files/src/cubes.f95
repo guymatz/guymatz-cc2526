@@ -91,7 +91,10 @@ MODULE cubes
     cube_add%array = c1%array + c2%array
     cube_add%data_title = c1%data_title // ' + ' // c2%data_title 
     cube_add%data_desc = c1%data_desc // ' + ' // c2%data_desc 
-    !real (KIND=wp) :: xmin, ymin, zmin, dx, dy, dz
+    ! Since our cubes are the same dimension we can say
+    cube_add%dx = c1%dx
+    cube_add%dy = c1%dy
+    cube_add%dz = c1%dz
     allocate(cube_add%zahl(size(c1%zahl) + size(c2%zahl)))
     print *, 'Length of new zahl: ', size(cube_add%zahl)
     do i = 1, size(c1%zahl), 1
@@ -127,14 +130,38 @@ MODULE cubes
     cube_sub%nx = c1%nx
     cube_sub%ny = c1%ny
     cube_sub%nz = c1%nz
+    ! Since our cubes are the same dimension we can say
+    cube_sub%dx = c1%dx
+    cube_sub%dy = c1%dy
+    cube_sub%dz = c1%dz
     print *, 'Subbed'
   END FUNCTION cube_sub
 
 
-  FUNCTION cube_int (mycube)
+  FUNCTION cube_int (xyz, dx, dy, dz)
     REAL (KIND=wp) :: cube_int
-    TYPE (cube), INTENT(IN) :: mycube
-    ! ...
+    real, dimension(:,:,:), INTENT(IN) :: xyz
+    real (KIND=wp), INTENT(in) :: dx, dy, dz
+    integer, dimension(3) :: dim
+    integer :: xdim, ydim, zdim, x, y, z
+    real :: xy_total, xyz_total
+    print *, 'Deltas: ', dx, dy, dz
+    dim = shape(xyz)
+    xdim = dim(1)
+    ydim = dim(2)
+    zdim = dim(3)
+    print *, 'DIM of xyz(z): ', xdim, ydim, zdim
+    xyz_total = 0
+    do z = 1, zdim, 1
+        xy_total = 0
+        do x = 1, xdim, 1
+            do y = 1, ydim, 1
+                xy_total = xy_total + xyz(x, y, z) * dx * dy
+            end do
+        end do
+        xyz_total = xyz_total + xy_total * dz
+    end do
+    print *, 'XYZ Total: ', xyz_total
   END FUNCTION cube_int
 
 
@@ -152,12 +179,15 @@ MODULE cubes
 
 
   FUNCTION cube_cdz (drho)
+    TYPE(cube) :: cube_cdz
     TYPE(cube), INTENT(IN) :: drho
-    real, DIMENSION(size(drho%array)) :: cube_cdz
+    !real, DIMENSION(size(drho%array)) :: cube_cdz%array
     real, DIMENSION(drho%nx , drho%ny , drho%nz) :: xyz
+    real :: integral
     integer :: i, x, y, z
     i = 1
     print *, 'IN cube_cdz: (', drho%nx, ', ', drho%ny, ', ', drho%nz, ')'
+    print *, 'IN cube_cdz: (', drho%dx, ', ', drho%dy, ', ', drho%dz, ')'
     !print *, 'HERE'
     do x = 1, drho%nx, 1
         do y = 1, drho%ny, 1
@@ -170,7 +200,7 @@ MODULE cubes
             end do
         end do
     end do
-    cube_cdz = drho%array
+    integral = cube_int(xyz, drho%dx, drho%dy, drho%dz)
   END FUNCTION cube_cdz
 
 END MODULE cubes

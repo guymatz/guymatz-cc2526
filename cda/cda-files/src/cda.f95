@@ -5,8 +5,8 @@ PROGRAM cda
 
   ! 1. Insantiate cube objects with data from cube files
   ! ../test/CuCO+/ab.cube, ../test/CuCO+/a.cube, and ../test/CuCO+/b.cube
-  TYPE(cube) :: rho_a, rho_b, rho_ab, rho_ref, drho
-  REAL (KIND=wp), DIMENSION(:), ALLOCATABLE :: cdz
+  TYPE(cube) :: rho_a, rho_b, rho_ab, rho_ref, drho, cdz
+  !REAL (KIND=wp), DIMENSION(:), ALLOCATABLE :: cdz
   call cube_get(rho_a, '../test/CuCO+/a.cube')
   call cube_get(rho_b, '../test/CuCO+/b.cube')
   call cube_get(rho_ab, '../test/CuCO+/ab.cube')
