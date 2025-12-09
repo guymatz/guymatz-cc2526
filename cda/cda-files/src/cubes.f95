@@ -200,6 +200,7 @@ MODULE cubes
         end do
     end do
     !  Now we can compute \delta q
+    ! first we compute Sum(1, N_x) Sum(1, N_y) \delta \rho(x_i, y_i, 
     do z = 1, drho%nz, 1
         xy_total(z) = 0.
         do x = 1, drho%nx, 1
@@ -209,6 +210,7 @@ MODULE cubes
         end do
     end do
     do z_out = 1, drho%nz, 1
+        dqiz = 0
         do z_in = 1, z_out, 1
             dqiz = dqiz + xy_total(z_in) * drho%dz
         end do
@@ -216,7 +218,7 @@ MODULE cubes
     end do
 
     do i = 1, drho%nz, 1
-        print *, dq(i)
+        print *, i, dq(i)
     end do
 
   END subroutine cube_cdz

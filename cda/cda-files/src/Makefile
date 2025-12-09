@@ -8,6 +8,8 @@ OBJECTS= cda.o \
          kinds.o \
          cubes.o
 
+%.o: %.mod
+
 $(TARGET): $(OBJECTS)
 	$(FC) $(FFLAGS) -o $(TARGET) $(OBJECTS)
 
