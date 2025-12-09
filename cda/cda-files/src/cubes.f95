@@ -178,29 +178,47 @@ MODULE cubes
 !  END SUBROUTINE cube_cdz
 
 
-  FUNCTION cube_cdz (drho)
-    TYPE(cube) :: cube_cdz
+  subroutine cube_cdz (drho)
+    !TYPE(cube) :: cube_cdz
     TYPE(cube), INTENT(IN) :: drho
+    real (KIND=wp), DIMENSION(drho%nz) :: dq, xy_total
     !real, DIMENSION(size(drho%array)) :: cube_cdz%array
-    real, DIMENSION(drho%nx , drho%ny , drho%nz) :: xyz
-    real :: integral
-    integer :: i, x, y, z
+    real, DIMENSION(drho%nx , drho%ny , drho%nz) :: drho_xyz
+    real (KIND=wp) :: dqiz
+    integer :: i, x, y, z, z_in, z_out
     i = 1
-    !print *, 'IN cube_cdz: (', drho%nx, ', ', drho%ny, ', ', drho%nz, ')'
-    !print *, 'IN cube_cdz: (', drho%dx, ', ', drho%dy, ', ', drho%dz, ')'
-    !print *, 'HERE'
+    ! convert our array ro a 3D array, (x, y, z)
     do x = 1, drho%nx, 1
         do y = 1, drho%ny, 1
             do z = 1, drho%nz, 1
-                xyz(x, y, z) = drho%array(i)
+                drho_xyz(x, y, z) = drho%array(i)
                 i = i + 1
                 if (MOD(i, 100000) .EQ. 0) then
-                    !print *, i, ': (', x, ', ', y, ', ', z, ') = ', drho%array(i)
+                    print *, i, ': (', x, ', ', y, ', ', z, ') = ', drho%array(i)
                 end if
             end do
         end do
     end do
-    integral = cube_int(xyz, drho%dx, drho%dy, drho%dz)
-  END FUNCTION cube_cdz
+    !  Now we can compute \delta q
+    do z = 1, drho%nz, 1
+        xy_total(z) = 0.
+        do x = 1, drho%nx, 1
+            do y = 1, drho%ny, 1
+                xy_total(z) = xy_total(z) + drho_xyz(x, y, z) * drho%dx * drho%dy
+            end do
+        end do
+    end do
+    do z_out = 1, drho%nz, 1
+        do z_in = 1, z_out, 1
+            dqiz = dqiz + xy_total(z_in) * drho%dz
+        end do
+        dq(z_out) = dqiz
+    end do
+
+    do i = 1, drho%nz, 1
+        print *, dq(i)
+    end do
+
+  END subroutine cube_cdz
 
 END MODULE cubes
