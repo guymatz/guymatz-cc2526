@@ -1,4 +1,12 @@
+************************************************************************
       subroutine jpca15(ser, e, der)
+************************************************************************
+*     Takes as input argument a vector with the three interatomic
+*     distances (AB, AC, and BC) and returns as output the potential
+*     energy and the vector of the derivatives of the potential with
+*     respect to the interatomic distances (AB, AC, and BC). Distances
+*     are in bohr and energies are in eV.
+************************************************************************
 c srampino adapts to standard ABC
       implicit real * 8 (a-h,o-z)
       dimension ser(3), der(3)
