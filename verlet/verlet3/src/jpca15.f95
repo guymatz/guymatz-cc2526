@@ -1,13 +1,13 @@
-************************************************************************
+! ************************************************************************
       subroutine jpca15(ser, e, der)
-************************************************************************
-*     Takes as input argument a vector with the three interatomic
-*     distances (AB, AC, and BC) and returns as output the potential
-*     energy and the vector of the derivatives of the potential with
-*     respect to the interatomic distances (AB, AC, and BC). Distances
-*     are in bohr and energies are in eV.
-************************************************************************
-c srampino adapts to standard ABC
+! ************************************************************************
+! *     Takes as input argument a vector with the three interatomic
+! *     distances (AB, AC, and BC) and returns as output the potential
+! *     energy and the vector of the derivatives of the potential with
+! *     respect to the interatomic distances (AB, AC, and BC). Distances
+! *     are in bohr and energies are in eV.
+! ************************************************************************
+! srampino adapts to standard ABC
       implicit real * 8 (a-h,o-z)
       dimension ser(3), der(3)
       r12=ser(1)
@@ -24,14 +24,14 @@ c srampino adapts to standard ABC
       der(3)=d23+der(3)
       return
       end
-************************************************************************
+! ************************************************************************
       subroutine diat12(r,ener,der)
-************************************************************************
-*     This subroutine computes the energies of a diatomic potential 
-*     fitted to    10 points
-*     rms =      0.12856952 kcal/mol
-*     emax =      0.32188730 kcal/mol
-************************************************************************
+! ************************************************************************
+! *     This subroutine computes the energies of a diatomic potential 
+! *     fitted to    10 points
+! *     rms =      0.12856952 kcal/mol
+! *     emax =      0.32188730 kcal/mol
+! ************************************************************************
       implicit real*8 (a-h,o-z)
       dimension cf(  6)
       data cf(  1)/0.877523796221D+00/
@@ -59,14 +59,14 @@ c srampino adapts to standard ABC
       der=der-cf(1)*(vex2+aux)*bux
       return
       end
-*************************************************************
+! *************************************************************
       subroutine triaaa(r12,r13,r23,ener,der)       
-*************************************************************
-*     This subroutine computes the energies of a 3D PES     
-*     for the AAA system class fitted to  276 points      
-*     rms =      1.75035364 kcal/mol                              
-*     emax =     12.92836324 kcal/mol                             
-*************************************************************
+! *************************************************************
+! *     This subroutine computes the energies of a 3D PES     
+! *     for the AAA system class fitted to  276 points      
+! *     rms =      1.75035364 kcal/mol                              
+! *     emax =     12.92836324 kcal/mol                             
+! *************************************************************
       implicit real*8(a-h,o-z)                               
       dimension i1(   43),i2(   43),i3(   43),i4(   43),cf(   43)  
       dimension f12(0: 8),f13(0: 8),f23(0: 8)    
