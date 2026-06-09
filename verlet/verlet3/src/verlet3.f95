@@ -1,9 +1,10 @@
 program main
-!    use jpca15
-    use lennard_jones
+    use jpca15
+!    use lennard_jones
     use kinds, ONLY: wp => dp
     implicit none
 
+    CHARACTER(len=32) :: arg
     real (KIND=wp), DIMENSION(:,:), ALLOCATABLE :: x, v, f, fnext, mass
     real (KIND=wp), DIMENSION(3) :: ser, er, der
     integer :: nk
@@ -21,30 +22,44 @@ program main
     integer, parameter:: steps = 2000
     !real (KIND = wp), DIMENSION(7) :: p_a, p_b ! our two particles
 
-    ser = (/0.1, 0.2, 0.3/)
-    call jpca15(ser, er, der)
-    print *, er(1), er(2), er(3)
+! Vars over
+! Program begins
+! Process command-line args
 
-    allocate(x(2,3))
-    allocate(v(2,3))
-    allocate(f(2,3))
-    allocate(fnext(2,3))
-    allocate(mass(2,1))
-    open (UNIT=11, FILE="verlet-2.dat", STATUS="old", ACTION="read")
+    i = 0
+    DO
+      CALL get_command_argument(i, arg)
+      IF (LEN_TRIM(arg) == 0) EXIT
+      WRITE (*, *) TRIM(arg)
+      i = i + 1
+    END DO
+
+    STOP
+!    ser = (/0.1, 0.2, 0.3/)
+!    call jpca15(ser, er, der)
+!    print *, er(1), er(2), er(3)
+!    print *, der(1), der(2), der(3)
+!    return
+
+    open (UNIT=11, FILE="atoms.dat", STATUS="old", ACTION="read")
     read(unit = 11, FMT=*) nk, tau
     read(unit = 11, FMT=*) sigma, epsilon
     read(unit = 11, FMT=*) num_atoms
     !print *, nk, tau, sigma, epsilon, num_atoms
     print *, num_atoms
 
+    allocate(x(num_atoms,3))
+    allocate(v(num_atoms,3))
+    allocate(f(num_atoms,3))
+    allocate(fnext(num_atoms,3))
+    allocate(mass(num_atoms,1))
+
     ! read in info for particles a & b
-    read(unit = 11, FMT=*) mass(1, 1), ax, ay, az, vx, vy, vz
-    !x(1,:) = (/ 0.0, 1.1, 2.2 /)
-    x(1,:) = (/ ax, ay, az /)
-    v(1,:) = (/ vx, vy, vz /)
-    read(unit = 11, FMT=*) mass(2, 1), ax, ay, az, vx, vy, vz
-    x(2,:) = (/ ax, ay, az /)
-    v(2,:) = (/ vx, vy, vz /)
+    do i = 1, num_atoms, 1
+        read(unit = 11, FMT=*) mass(i, 1), ax, ay, az, vx, vy, vz
+        x(i,:) = (/ ax, ay, az /)
+        v(i,:) = (/ vx, vy, vz /)
+    end do
     close(unit = 11) 
 !    print *, 'Particle A:'
 !    print *, p_a
