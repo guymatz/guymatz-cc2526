@@ -4,7 +4,7 @@ FC=gfortran
 FFLAGS =
 
 TARGET= ../bin/verlet3 
-OBJECTS= verlet3.o \
+OBJECTS= main.o \
          jpca15.o \
          kinds.o
 
@@ -13,7 +13,7 @@ OBJECTS= verlet3.o \
 $(TARGET): $(OBJECTS)
 	$(FC) $(FFLAGS) -o $(TARGET) $(OBJECTS)
 
-verlet3.o: verlet3.f95  jpca15.o kinds.o
+main.o: main.f95  jpca15.o kinds.o
 jpca15.o: jpca15.f kinds.o
 kinds.o: kinds.f95
 

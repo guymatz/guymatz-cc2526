@@ -1,4 +1,5 @@
 program main
+! See subroutines at end of file
 
 ! Var definitions, etc
     use kinds, ONLY: wp => dp
@@ -25,7 +26,7 @@ program main
     real (KIND=wp) :: d_AB, d_AC, d_BC
     ! Delta for interatomic distances
     real (KIND=wp), DIMENSION(3)  :: dd_AB, dd_AC, dd_BC
-    real (KIND=wp) :: delta = 0.000001
+    real (KIND=wp) :: delta = 0.01
     ! For computing jPCA with delta
     real (KIND=wp), DIMENSION(3) :: dd_ser, dd_er, dd_der
     !integer :: num_rows
@@ -48,7 +49,7 @@ program main
       IF (i.gt.command_argument_count()) exit
 
       CALL get_command_argument(i, arg)
-      ! Delta
+      ! Delta - defaults to 0.01 (see above)
       IF (arg == "-d") THEN
           i = i + 1
           CALL get_command_argument(i, arg)
@@ -58,12 +59,13 @@ program main
               print *, "Delta too small!"
               STOP
           END IF
-      ! Num steps
+      ! Num steps - defaults to 2000 (see above)
       ELSE IF (arg == "-s") THEN
           i = i + 1
           CALL get_command_argument(i, arg)
           ! print *, "arg -s:", arg
           read( arg, '(I5)' ) steps 
+      ! file_name -  defaults to atoms.dat (see above)
       ELSE IF (arg == "-f") THEN
           i = i + 1
           CALL get_command_argument(i, arg)
@@ -74,7 +76,11 @@ program main
               STOP
           END IF
       ELSE
-          print *, "Usage: verlet3 [ [-f data_file] | atoms.dat ]  [ [-d delta |", delta, "]"
+          print *, "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ]"
+          print *, "DEFAULTS:"
+          print '(A, A)', "    data_file - ", file_name
+          print '(A, F0.9)', "        delta - ", delta
+          print '(A, I0)', "        steps - ", steps
           STOP
       END IF
     END DO
@@ -136,12 +142,12 @@ program main
     call eudist( x(1, :) , x(2, :), d_AB)
     call eudist( x(1, :) , x(3, :), d_BC)
     call eudist( x(2, :) , x(3, :), d_AC)
-    ! initial values of potentials
+    ! Initial values of potentials
     ser = (/d_AB, d_AC, d_BC/)
     call jpca15(ser, er, der)
-    ! numerical derivative of each inter-atomic distance, in each direction
-    ! AB x, y, z
-    ! subroutine eudist_with_delta(p1, p2, delta, dim, dist)
+    ! Numerical derivative of each inter-atomic distance, in each direction
+    ! E.g., AB x, y, z
+    ! Call subroutine eudist_with_delta(p1, p2, delta, dim, dist)
     call eudist_with_delta(x(1, :), x(2, :), delta, 1, dd_AB(1))
     call eudist_with_delta(x(1, :), x(2, :), delta, 2, dd_AB(2))
     call eudist_with_delta(x(1, :), x(2, :), delta, 3, dd_AB(3))
@@ -151,6 +157,7 @@ program main
     call eudist_with_delta(x(2, :), x(3, :), delta, 1, dd_BC(1))
     call eudist_with_delta(x(2, :), x(3, :), delta, 2, dd_BC(2))
     call eudist_with_delta(x(2, :), x(3, :), delta, 3, dd_BC(3))
+    ! print *, "eudist_with_delta - dd_BC(3)", dd_BC(3)
 
 !    print *, "er: ", er
 !    print *, "der: ", der
@@ -209,5 +216,6 @@ subroutine eudist_with_delta(p1, p2, delta, dim, dist)
     p1(dim) = p1(dim) + delta
     p2(dim) = p2(dim) + delta
     call eudist(p1, p2, dist)
+    ! Not divide by delta to get "derivative"
+    dist = dist / delta
 end subroutine eudist_with_delta
-
