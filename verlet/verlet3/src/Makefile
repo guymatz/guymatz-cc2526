@@ -1,4 +1,5 @@
 #FC=g95
+# THIS BREAKS LINKING
 #STDF= -std=f95
 FC=gfortran
 FFLAGS =
