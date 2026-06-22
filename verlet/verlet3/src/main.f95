@@ -36,7 +36,7 @@ program main
     ! for storing intermediate values
     integer :: i, j, k
     !integer, parameter:: wp = SELECTED_REAL_KIND (p = 13, r = 300)
-    integer :: steps = 2000
+    integer :: steps = 0
     !real (KIND = wp), DIMENSION(7) :: p_a, p_b ! our two particles
 
 
@@ -84,9 +84,6 @@ program main
           STOP
       END IF
     END DO
-    print *, "Will use delta: ", delta
-    print *, "Will use file: ", file_name
-    print *, "Will use num steps: ", steps
 
     ! ser = (/0.1, 0.2, 0.3/)
     ! call jpca15(ser, er, der)
@@ -101,6 +98,15 @@ program main
     read(unit = 11, FMT=*) num_atoms
     !print *, nk, tau, sigma, epsilon, num_atoms
     print *, "Number of atoms:", num_atoms
+
+    ! Let the command-line `steps` override nk, if it's set
+    if (steps > 0) then
+        nk = steps
+    end if
+
+    print *, "Will use delta: ", delta
+    print *, "Will use file: ", file_name
+    print *, "Will use num steps: ", nk
 
 ! Allocate arrays for position, velocity, force & mass
     ! Position
@@ -125,18 +131,24 @@ program main
         print *, '  Initial Velocity: ', v(i, :)
     end do
     close(unit = 11) 
-    ! Initial Force for particle a
-!    f(1,1) = lj(epsilon, sigma, x(1,:), x(2,:), 1)
-!    f(1,2) = lj(epsilon, sigma, x(1,:), x(2,:), 2)
-!    f(1,3) = lj(epsilon, sigma, x(1,:), x(2,:), 3)
-!    f(2,1) = lj(epsilon, sigma, x(2,:), x(1,:), 1)
-!    f(2,2) = lj(epsilon, sigma, x(2,:), x(1,:), 2)
-!    f(2,3) = lj(epsilon, sigma, x(2,:), x(1,:), 3)
-!    print *, 'initial f(1, :) ', f(1, :)
-!    print *, 'initial f(2, :) ', f(2, :)
+
+! Initial Force for particle a
+    do a = 1, num_atoms, 1
+        do d = 1, 3, 1 ! dimensions
+            f(a, d) = lj(epsilon, sigma, x(1,:), x(2,:), 1)
+        end do
+    end do
+    f(1,1) = lj(epsilon, sigma, x(1,:), x(2,:), 1)
+    f(1,2) = lj(epsilon, sigma, x(1,:), x(2,:), 2)
+    f(1,3) = lj(epsilon, sigma, x(1,:), x(2,:), 3)
+    f(2,1) = lj(epsilon, sigma, x(2,:), x(1,:), 1)
+    f(2,2) = lj(epsilon, sigma, x(2,:), x(1,:), 2)
+    f(2,3) = lj(epsilon, sigma, x(2,:), x(1,:), 3)
+    print *, 'initial f(1, :) ', f(1, :)
+    print *, 'initial f(2, :) ', f(2, :)
 
   ! Compute 
-  do i = 1, steps, 1
+  do i = 1, nk, 1
     ! euclidean distances
     !d_AB = SQRT( (x(1, 1) - x(2, 1))**2 +  (x(1, 2) - x(2, 2))**2 +  (x(1, 3) - x(2, 3))**2 ) 
     call eudist( x(1, :) , x(2, :), d_AB)
