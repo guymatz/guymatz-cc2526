@@ -27,3 +27,16 @@ eV.
 Save the trajectories in XYZ format (see `verlet-2.md`) and
 visualize them through a molecular visualize (e.g.,
 [VMD](https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD)).
+
+# Notes
+
+I am starting with the following initial conditions:
+
+```
+6000 1.0                                     ! number of iterations, tau
+3                                            ! number of atoms
+                                             ! mass, location, velocity
+1.0080 -10.0  0.0  0.0  1.0  0.0  0.0        ! m, x, y, z, vx, vy, vz
+1.0080  10.0  0.0  0.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz 
+1.0080 10.74  0.0  0.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz 
+```
