@@ -15,7 +15,8 @@ subroutine get_ser(p1, p2, p3, ser)
     real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2, p3
     real(KIND=wp), DIMENSION(3), intent(out) :: ser
 
-    call eudist(p1, p2, ser(1))
+    !call eudist(p1, p2, ser(1))
+    ser(1) = eudistf(p1, p2)
     call eudist(p1, p3, ser(2))
     call eudist(p2, p2, ser(3))
 end subroutine get_ser

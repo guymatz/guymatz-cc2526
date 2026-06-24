@@ -1,9 +1,10 @@
-program main
+program test
 ! variables
     use kinds, ONLY: wp => dp
     implicit none
     real(KIND=wp), DIMENSION(:, :), ALLOCATABLE :: x, v, f, fnext
     real(KIND=wp), DIMENSION(:), ALLOCATABLE :: mass
+    real(KIND=wp) :: eudistf
     integer :: nk ! num interations
     integer :: n = 3  ! num atoms
     real(KIND=wp) :: tau, delta
@@ -37,6 +38,7 @@ program main
 
     print *, 'fnext: -2.209358416015258e-05 = '!, call jpca15((1, 3)
     print *, 'fnext: 2.209358416015258e-05 = '!, lj_out(2, 3)
+    print *, 'eudistf: ', eudistf(x(1, :), x(2, :))
 
 ! clean up
     deallocate (x)
@@ -45,4 +47,13 @@ program main
     deallocate (fnext)
     deallocate (mass)
 
-end program main
+end program
+
+! real(KIND=wp) function eudistf(p1, p2)
+!     use kinds, ONLY: wp => dp
+!     implicit none
+!     real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2
+!     ! print *, "in func: eudistf before . . .  "
+!     eudistf = 0.3
+!     ! print *, "in func: eudistf: ", eudistf
+! end function
