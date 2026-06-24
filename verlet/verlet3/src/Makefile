@@ -6,17 +6,17 @@ FFLAGS =
 
 TARGET= ../bin/verlet3 
 OBJECTS= main.o \
-         verlet.o \
          jpca15.o \
          kinds.o
+         # verlet.o \
 
 %.o: %.mod
 
 $(TARGET): $(OBJECTS)
 	$(FC) $(FFLAGS) -o $(TARGET) $(OBJECTS)
 
-main.o: main.f95  jpca15.o kinds.o verlet.o
-jpca15.o: verlet.f95 kinds.o
+main.o: main.f95  jpca15.o kinds.o# verlet.o
+# verlet.o: verlet.f95 kinds.o
 jpca15.o: jpca15.f kinds.o
 kinds.o: kinds.f95
 

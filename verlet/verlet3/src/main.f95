@@ -64,7 +64,7 @@ program main
             read (arg, '(f33.32)') cli_delta
             IF (cli_delta == 0) THEN
                 print *, "Delta too small!"
-                STOP
+                STOP 67
             END IF
             ! Num steps - defaults to 2000 (see above)
         ELSE IF (arg == "-s") THEN
@@ -80,7 +80,7 @@ program main
             INQUIRE (FILE=file_name, EXIST=OK)
             if (.NOT. OK) THEN
                 print *, "ERROR!!  File does not exist: ", file_name
-                STOP
+                STOP 83
             END IF
         ELSE
             print *, "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ]"
@@ -88,7 +88,7 @@ program main
             print '(A, A)', "    data_file - ", file_name
             print '(A, F0.9)', "        delta - ", delta
             print '(A, I0)', "        steps - ", steps
-            STOP
+            STOP 91
         END IF
     END DO
 
@@ -137,7 +137,15 @@ program main
     end do
     close (unit=11)
 
-! Initial Force for particles
+! Initial location & velocity for particles
+    print *, '========= Initial locations & velocities'
+    print *, 'initial x_A ', x(1, :)
+    print *, 'initial x_B ', x(2, :)
+    print *, 'initial x_C ', x(3, :)
+
+    print *, 'initial v_A ', v(1, :)
+    print *, 'initial v_B ', v(2, :)
+    print *, 'initial v_C ', v(3, :)
     ! jpca15 function:
     ! INPUT
     !   ser: a vector with the three interatomic distances (AB, AC, and BC)
@@ -145,19 +153,16 @@ program main
     !   er: potential energy (in eV)
     !   der: vector of the derivatives of the potential with
     !        respect to the interatomic distances (AB, AC, and BC) (in bohr)
+! Initial Force for particles
     call compute_force(x, delta, fnext)
-
-    !d_AB_ser =
-    do atom_num = 1, num_atoms, 1
-        do dim = 1, 3, 1 ! dimensions
-
-        end do
+    print *, '========= Initial Forces'
+    do i = 1, num_atoms, 1
+        print *, "Atomic forces: ", i, ": x - ", fnext(i, 1)
+        print *, "Atomic forces: ", i, ": y - ", "        ", fnext(i, 2)
+        print *, "Atomic forces: ", i, ": z -", "        ", "        ", fnext(i, 3)
     end do
-    print *, 'initial f_AB ', f_AB
-    print *, 'initial f_AC ', f_AC
-    print *, 'initial f_BC ', f_BC
 
-    STOP 1
+    STOP 161
 
     ! Iterate!
     do k = 1, nk, 1
@@ -290,12 +295,14 @@ subroutine compute_force(points, delta, force)
     ser = (/d_(1), d_(2), d_(3)/)
     call jpca15(ser, er, der)
 
+    ! get distances between atoms in each dimension
     do dim = 1, 3, 1
         call eudist_with_delta(points(1, :), points(2, :), delta, dim, delta_d_(1, dim))
         call eudist_with_delta(points(1, :), points(3, :), delta, dim, delta_d_(2, dim))
         call eudist_with_delta(points(2, :), points(3, :), delta, dim, delta_d_(3, dim))
     end do
 
+    ! compute jpca for each dimension, and calculate force
     do dim = 1, 3, 1
         do atom_i = 1, 3, 1
             delta_ser = (/delta_d_(1, dim), delta_d_(2, dim), delta_d_(3, dim)/)
@@ -304,18 +311,16 @@ subroutine compute_force(points, delta, force)
         end do
     end do
 
-    print *, "d_(1): ", d_(1)
-    print *, "d_(2): ", d_(2)
-    print *, "d_(3): ", d_(3)
-
-    print *, "delta_d_(1): ", delta_d_(1, :)
-    print *, "delta_d_(2): ", delta_d_(2, :)
-    print *, "delta_d_(3): ", delta_d_(3, :)
-
-    print *, "force_(1): ", force(1, :)
-    print *, "force_(2): ", force(2, :)
-    print *, "force_(3): ", force(3, :)
-    stop 3
+    !print *, "d_(1): ", d_(1)
+    !print *, "d_(2): ", d_(2)
+    !print *, "d_(3): ", d_(3)
+    !print *, "delta_d_(1): ", delta_d_(1, :)
+    !print *, "delta_d_(2): ", delta_d_(2, :)
+    !print *, "delta_d_(3): ", delta_d_(3, :)
+    !print *, "force_(1): ", force(1, :)
+    !print *, "force_(2): ", force(2, :)
+    !print *, "force_(3): ", force(3, :)
+    !!STOP 321
 
     ! ser = (/d_AB, d_AC, d_BC/)
     ! call jpca15(ser, er, der)
