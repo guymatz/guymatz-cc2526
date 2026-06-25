@@ -2,7 +2,7 @@
 # THIS BREAKS LINKING
 #STDF= -std=f95
 FC=gfortran
-FFLAGS = -g -fbacktrace -fcheck=all -Wall
+#FFLAGS = -g -fbacktrace -fcheck=all -Wall
 
 # all: TARGET1 TARGET2
 
