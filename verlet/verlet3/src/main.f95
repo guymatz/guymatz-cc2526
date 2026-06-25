@@ -12,8 +12,8 @@ program main
     LOGICAL :: OK
     CHARACTER(len=32) :: arg
     CHARACTER(len=32) :: file_name = "atoms.dat"
-    integer :: arg_len
-    integer :: status
+    !integer :: arg_len
+    !integer :: status
     real(KIND=wp), DIMENSION(:, :), ALLOCATABLE :: x, v, f, fnext, mass
     ! ser, er & der are for parameters to jpca15 function
     ! INPUT
@@ -22,29 +22,29 @@ program main
     !   er: potential energy (in eV)
     !   der: vector of the derivatives of the potential with
     !        respect to the interatomic distances (AB, AC, and BC) (in bohr)
-    real(KIND=wp), DIMENSION(3) :: d_AB_ser, d_AB_er, d_AB_der
-    real(KIND=wp), DIMENSION(3) :: d_AC_ser, d_AC_er, d_AC_der
-    real(KIND=wp), DIMENSION(3) :: d_BC_ser, d_BC_er, d_BC_der
+    !real(KIND=wp), DIMENSION(3) :: d_AB_ser, d_AB_er, d_AB_der
+    !real(KIND=wp), DIMENSION(3) :: d_AC_ser, d_AC_er, d_AC_der
+    !real(KIND=wp), DIMENSION(3) :: d_BC_ser, d_BC_er, d_BC_der
     ! Force vectors (in the x-direction only)
-    real(KIND=wp), DIMENSION(3) :: f_AB, f_AC, f_BC, force
+    !real(KIND=wp), DIMENSION(3) :: f_AB, f_AC, f_BC, force
     ! for reading in atomic data from file
     integer :: nk
-    real :: sigma, epsilon
+    !real :: sigma, epsilon
     real :: tau
-    real :: tmp
+    !real :: tmp
     ! interatomic distances
-    real(KIND=wp) :: d_AB, d_AC, d_BC
+    !real(KIND=wp) :: d_AB, d_AC, d_BC
     ! Delta for interatomic distances
-    real(KIND=wp), DIMENSION(3) :: dd_AB, dd_AC, dd_BC
+    !real(KIND=wp), DIMENSION(3) :: dd_AB, dd_AC, dd_BC
     real(KIND=wp) :: delta = 0.1, cli_delta = 0
     ! For computing jPCA with delta
-    real(KIND=wp), DIMENSION(3) :: dd_ser, dd_er, dd_der
+    !real(KIND=wp), DIMENSION(3) :: dd_ser, dd_er, dd_der
     !integer :: num_rows
     integer :: num_atoms
     ! locations and velocites for atom
     real(KIND=wp) :: ax, ay, az, vx, vy, vz
     ! for storing intermediate values & looping
-    integer :: i, j, k
+    integer :: i, k
     !integer, parameter:: wp = SELECTED_REAL_KIND (p = 13, r = 300)
     integer :: steps = 0
     !real (KIND = wp), DIMENSION(7) :: p_a, p_b ! our two particles
