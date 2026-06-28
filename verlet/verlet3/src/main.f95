@@ -1,36 +1,9 @@
 program main
-! See subroutines at end of file
-    ! eudist_with_delta(p1, p2, delta, dim, dist)
-    ! eudist(p1, p2, dist)
 
 ! Var definitions, etc
     use kinds, ONLY: wp => dp
+    use verlet
     implicit none
-
-    ! INTERFACE
-    !     pure function eudist(p1, p2) result(dist)
-    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2
-    !     end function eudist
-    !     subroutine get_ser(p1, p2, p3, ser)
-    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2, p3
-    !         real(KIND=wp), DIMENSION(3), intent(out) :: ser
-    !     end subroutine get_ser
-    !     subroutine get_delta_ser(p1, p2, p3, delta, ser)
-    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2, p3
-    !         real(KIND=wp), intent(in) :: delta
-    !         real(KIND=wp), DIMENSION(3, 3), intent(out) :: ser
-    !     end subroutine get_delta_ser
-    !     subroutine eudist_with_delta(p1, p2, delta, dim, dist)
-    !         real(KIND=wp), intent(in) :: delta
-    !         integer, intent(in) :: dim
-    !         real(KIND=wp), intent(out) :: dist
-    !     end subroutine eudist_with_delta
-    !     subroutine compute_force(points, delta, forces)
-    !         real(KIND=wp), DIMENSION(3, 3), intent(in) :: points
-    !         real(KIND=wp), DIMENSION(3, 3), intent(out) :: forces
-    !         real(KIND=wp), intent(in) :: delta
-    !     end subroutine compute_force
-    ! END INTERFACE
 
 ! vars
     ! for looping by atoms & dimension

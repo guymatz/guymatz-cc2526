@@ -1,41 +1,17 @@
 program test
 ! preamble
     use kinds, ONLY: wp => dp
+    use verlet
     implicit none
-
-    ! INTERFACE
-    !     pure function eudist(p1, p2) result(dist)
-    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2
-    !     end function eudist
-    !     subroutine get_ser(p1, p2, p3, ser)
-    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2, p3
-    !         real(KIND=wp), DIMENSION(3), intent(out) :: ser
-    !     end subroutine get_ser
-    !     subroutine get_delta_ser(p1, p2, p3, delta, ser)
-    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2, p3
-    !         real(KIND=wp), intent(in) :: delta
-    !         real(KIND=wp), DIMENSION(3, 3), intent(out) :: ser
-    !     end subroutine get_delta_ser
-    !     subroutine eudist_with_delta(p1, p2, delta, dim, dist)
-    !         real(KIND=wp), intent(in) :: delta
-    !         integer, intent(in) :: dim
-    !         real(KIND=wp), intent(out) :: dist
-    !     end subroutine eudist_with_delta
-    !     subroutine compute_force(points, delta, forces)
-    !         real(KIND=wp), DIMENSION(3, 3), intent(in) :: points
-    !         real(KIND=wp), intent(in) :: delta
-    !         real(KIND=wp), DIMENSION(3, 3), intent(inout) :: forces
-    !     end subroutine compute_force
-    ! END INTERFACE
 
 ! variables
     real(KIND=wp), DIMENSION(:, :), ALLOCATABLE :: x, v, f, fnext, points, forces
     real(KIND=wp), DIMENSION(:), ALLOCATABLE :: mass
     real(KIND=wp), DIMENSION(3) :: distance_with_delta
-    real(KIND=wp) :: eudist
     integer :: nk ! num interations
     integer :: n = 3  ! num atoms
     real(KIND=wp) :: tau, delta
+    real(KIND=wp) :: dist
     allocate (x(n, 3))
     allocate (v(n, 3))
     allocate (f(n, 3))
@@ -72,25 +48,25 @@ program test
     print *, 'eudist: B - C', eudist(x(2, :), x(3, :))
     print *, " TEST distance w/ delta ========      x                        y              &
 &          z"
-    call eudist_with_delta(x(1, :), x(2, :), delta, 1, distance_with_delta)
-    print *, 'dist w/ delta: A - B, d x', distance_with_delta
-    call eudist_with_delta(x(1, :), x(2, :), delta, 2, distance_with_delta)
+    distance_with_delta = eudist_with_delta(x(1, :), x(2, :), delta, 1)
+    print *, 'dist w/ delta: A - B, d x', dist
+    distance_with_delta = eudist_with_delta(x(1, :), x(2, :), delta, 2)
     print *, 'dist w/ delta: A - B, d y', distance_with_delta
-    call eudist_with_delta(x(1, :), x(2, :), delta, 3, distance_with_delta)
+    distance_with_delta = eudist_with_delta(x(1, :), x(2, :), delta, 3)
     print *, 'dist w/ delta: A - B, d z', distance_with_delta
     print *, ""
-    call eudist_with_delta(x(1, :), x(3, :), delta, 1, distance_with_delta)
+    distance_with_delta = eudist_with_delta(x(1, :), x(3, :), delta, 1)
     print *, 'dist w/ delta: A - C, d x', distance_with_delta
-    call eudist_with_delta(x(1, :), x(3, :), delta, 2, distance_with_delta)
+    distance_with_delta = eudist_with_delta(x(1, :), x(3, :), delta, 2)
     print *, 'dist w/ delta: A - C, d y', distance_with_delta
-    call eudist_with_delta(x(1, :), x(3, :), delta, 3, distance_with_delta)
+    distance_with_delta = eudist_with_delta(x(1, :), x(3, :), delta, 3)
     print *, 'dist w/ delta: A - C, d z', distance_with_delta
     print *, ""
-    call eudist_with_delta(x(2, :), x(3, :), delta, 1, distance_with_delta)
+    distance_with_delta = eudist_with_delta(x(2, :), x(3, :), delta, 1)
     print *, 'dist w/ delta: B - C, d x', distance_with_delta
-    call eudist_with_delta(x(2, :), x(3, :), delta, 2, distance_with_delta)
+    distance_with_delta = eudist_with_delta(x(2, :), x(3, :), delta, 2)
     print *, 'dist w/ delta: B - C, d y', distance_with_delta
-    call eudist_with_delta(x(2, :), x(3, :), delta, 3, distance_with_delta)
+    distance_with_delta = eudist_with_delta(x(2, :), x(3, :), delta, 3)
     print *, 'dist w/ delta: B - C, d z', distance_with_delta
     print *, ""
 
