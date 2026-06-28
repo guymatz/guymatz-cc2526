@@ -6,6 +6,33 @@ program main
 ! Var definitions, etc
     use kinds, ONLY: wp => dp
     implicit none
+
+    ! INTERFACE
+    !     pure function eudist(p1, p2) result(dist)
+    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2
+    !     end function eudist
+    !     subroutine get_ser(p1, p2, p3, ser)
+    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2, p3
+    !         real(KIND=wp), DIMENSION(3), intent(out) :: ser
+    !     end subroutine get_ser
+    !     subroutine get_delta_ser(p1, p2, p3, delta, ser)
+    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2, p3
+    !         real(KIND=wp), intent(in) :: delta
+    !         real(KIND=wp), DIMENSION(3, 3), intent(out) :: ser
+    !     end subroutine get_delta_ser
+    !     subroutine eudist_with_delta(p1, p2, delta, dim, dist)
+    !         real(KIND=wp), intent(in) :: delta
+    !         integer, intent(in) :: dim
+    !         real(KIND=wp), intent(out) :: dist
+    !     end subroutine eudist_with_delta
+    !     subroutine compute_force(points, delta, forces)
+    !         real(KIND=wp), DIMENSION(3, 3), intent(in) :: points
+    !         real(KIND=wp), DIMENSION(3, 3), intent(out) :: forces
+    !         real(KIND=wp), intent(in) :: delta
+    !     end subroutine compute_force
+    ! END INTERFACE
+
+! vars
     ! for looping by atoms & dimension
     integer :: atom_num, dim
 
@@ -30,7 +57,7 @@ program main
     ! for reading in atomic data from file
     integer :: nk
     !real :: sigma, epsilon
-    real :: tau
+    real(KIND=wp) :: tau
     !real :: tmp
     ! interatomic distances
     !real(KIND=wp) :: d_AB, d_AC, d_BC
@@ -64,7 +91,8 @@ program main
             read (arg, '(f33.32)') cli_delta
             IF (cli_delta == 0) THEN
                 print *, "Delta too small!"
-                STOP
+                print *, "main +67"
+                STOP 67
             END IF
             ! Num steps - defaults to 2000 (see above)
         ELSE IF (arg == "-s") THEN
@@ -80,7 +108,8 @@ program main
             INQUIRE (FILE=file_name, EXIST=OK)
             if (.NOT. OK) THEN
                 print *, "ERROR!!  File does not exist: ", file_name
-                STOP
+                print *, "main +108"
+                STOP 108
             END IF
         ELSE
             print *, "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ]"
@@ -88,7 +117,8 @@ program main
             print '(A, A)', "    data_file - ", file_name
             print '(A, F0.9)', "        delta - ", delta
             print '(A, I0)', "        steps - ", steps
-            STOP
+            print *, "main +117"
+            STOP 117
         END IF
     END DO
 
