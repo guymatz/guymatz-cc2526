@@ -1,7 +1,34 @@
 program test
-! variables
+! preamble
     use kinds, ONLY: wp => dp
     implicit none
+
+    ! INTERFACE
+    !     pure function eudist(p1, p2) result(dist)
+    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2
+    !     end function eudist
+    !     subroutine get_ser(p1, p2, p3, ser)
+    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2, p3
+    !         real(KIND=wp), DIMENSION(3), intent(out) :: ser
+    !     end subroutine get_ser
+    !     subroutine get_delta_ser(p1, p2, p3, delta, ser)
+    !         real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2, p3
+    !         real(KIND=wp), intent(in) :: delta
+    !         real(KIND=wp), DIMENSION(3, 3), intent(out) :: ser
+    !     end subroutine get_delta_ser
+    !     subroutine eudist_with_delta(p1, p2, delta, dim, dist)
+    !         real(KIND=wp), intent(in) :: delta
+    !         integer, intent(in) :: dim
+    !         real(KIND=wp), intent(out) :: dist
+    !     end subroutine eudist_with_delta
+    !     subroutine compute_force(points, delta, forces)
+    !         real(KIND=wp), DIMENSION(3, 3), intent(in) :: points
+    !         real(KIND=wp), intent(in) :: delta
+    !         real(KIND=wp), DIMENSION(3, 3), intent(inout) :: forces
+    !     end subroutine compute_force
+    ! END INTERFACE
+
+! variables
     real(KIND=wp), DIMENSION(:, :), ALLOCATABLE :: x, v, f, fnext, points, forces
     real(KIND=wp), DIMENSION(:), ALLOCATABLE :: mass
     real(KIND=wp), DIMENSION(3) :: distance_with_delta
@@ -45,7 +72,6 @@ program test
     print *, 'eudist: B - C', eudist(x(2, :), x(3, :))
     print *, " TEST distance w/ delta ========      x                        y              &
 &          z"
-
     call eudist_with_delta(x(1, :), x(2, :), delta, 1, distance_with_delta)
     print *, 'dist w/ delta: A - B, d x', distance_with_delta
     call eudist_with_delta(x(1, :), x(2, :), delta, 2, distance_with_delta)
@@ -70,10 +96,9 @@ program test
 
     print *, " TEST compute_force ========      x                        y                     z"
     PRINT *, forces
-    call compute_force(x, delta, 3, forces)
+    call compute_force(x, delta, forces)
     print *, " Forces ========      x                        y                     z"
     print *, 'forces: A - B - C', forces
-    STOP 42
 
 ! clean up
     deallocate (x)
@@ -83,12 +108,3 @@ program test
     deallocate (mass)
 
 end program
-
-! real(KIND=wp) function eudistf(p1, p2)
-!     use kinds, ONLY: wp => dp
-!     implicit none
-!     real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2
-!     ! print *, "in func: eudistf before . . .  "
-!     eudistf = 0.3
-!     ! print *, "in func: eudistf: ", eudistf
-! end function

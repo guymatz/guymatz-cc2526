@@ -1,13 +1,3 @@
-! subroutine eudist(p1, p2, dist)
-!     use kinds, ONLY: wp => dp
-!     implicit none
-!     ! Two points
-!     real(KIND=wp), DIMENSION(3), intent(in) :: p1, p2
-!     ! Distance to return
-!     real(KIND=wp), intent(out) :: dist
-!     dist = SQRT((p1(1) - p2(1))**2 + (p1(2) - p2(2))**2 + (p1(3) - p2(3))**2)
-! end subroutine eudist
-
 pure function eudist(p1, p2) result(dist)
     use kinds, ONLY: wp => dp
     implicit none
@@ -93,7 +83,7 @@ subroutine compute_force(points, delta, forces)
     integer :: dim, atom_i
     real(KIND=wp) :: eudist
 
-    print *, "p1: ", points(1, :)
+    ! print *, "p1: ", points(1, :)
     ! get der first for actual location
     ! First we get interatomic distances
     d_(1) = eudist(points(1, :), points(2, :))
@@ -103,7 +93,7 @@ subroutine compute_force(points, delta, forces)
 
     ser = (/d_(1), d_(2), d_(3)/)
     call jpca15(ser, er, der)
-    print *, "p2: ", points(2, :)
+    ! print *, "p2: ", points(2, :)
 
     do dim = 1, 3, 1
         call eudist_with_delta(points(1, :), points(2, :), delta, dim, delta_d_(1, dim))
@@ -111,49 +101,47 @@ subroutine compute_force(points, delta, forces)
         call eudist_with_delta(points(2, :), points(3, :), delta, dim, delta_d_(3, dim))
     end do
 
-    PRINT *, forces
+    ! PRINT *, forces
     do dim = 1, 3, 1
         do atom_i = 1, 3, 1
-            PRINT *, forces(atom_i, dim), atom_i, dim
+            ! PRINT *, forces(atom_i, dim), atom_i, dim
             forces(atom_i, dim) = 0.0_wp
         end do
     end do
-    STOP 124
 
-    print *, "p3: ", points(3, :)
+    ! print *, "p3: ", points(3, :)
     do dim = 1, 3, 1
         do atom_i = 1, 3, 1
-            print *, "dim / atom: ", dim, atom_i
+            ! print *, "dim / atom: ", dim, atom_i
             delta_ser = (/delta_d_(1, dim), delta_d_(2, dim), delta_d_(3, dim)/)
-            print *, "delta_ser: ", delta_ser
+            ! print *, "delta_ser: ", delta_ser
             call jpca15(delta_ser, delta_er, delta_der)
-            print *, "delta_der: ", delta_der
-            print *, "der: ", der
-            print *, "delta: ", delta
-            print *, "derivative:", (delta_der(dim) - der(dim)) / delta
-            print *, "size of force: ", size(forces)
-            print *, "size of force(1): ", size(forces(1, :))
-            print *, "size of force(2): ", size(forces(2, :))
-            print *, "size of force(3): ", size(forces(3, :))
+            ! print *, "delta_der: ", delta_der
+            ! print *, "der: ", der
+            ! print *, "delta: ", delta
+            ! print *, "derivative:", (delta_der(dim) - der(dim)) / delta
+            ! print *, "size of force: ", size(forces)
+            ! print *, "size of force(1): ", size(forces(1, :))
+            ! print *, "size of force(2): ", size(forces(2, :))
+            ! print *, "size of force(3): ", size(forces(3, :))
             single_force = (delta_der(dim) - der(dim)) / delta
-            print *, "Force: ", single_force
-            print *, "Force 1, 1: ", forces(atom_i, dim)
+            ! print *, "Force: ", single_force
+            ! print *, "Force 1, 1: ", forces(atom_i, dim)
             forces(atom_i, dim) = single_force
         end do
     end do
 
-    print *, "d_(1): ", d_(1)
-    print *, "d_(2): ", d_(2)
-    print *, "d_(3): ", d_(3)
+    ! print *, "d_(1): ", d_(1)
+    ! print *, "d_(2): ", d_(2)
+    ! print *, "d_(3): ", d_(3)
 
-    print *, "delta_d_(1): ", delta_d_(1, :)
-    print *, "delta_d_(2): ", delta_d_(2, :)
-    print *, "delta_d_(3): ", delta_d_(3, :)
+    ! print *, "delta_d_(1): ", delta_d_(1, :)
+    ! print *, "delta_d_(2): ", delta_d_(2, :)
+    ! print *, "delta_d_(3): ", delta_d_(3, :)
 
-    print *, "force_(1): ", forces(1, :)
-    print *, "force_(2): ", forces(2, :)
-    print *, "force_(3): ", forces(3, :)
-    stop 3
+    ! print *, "force_(1): ", forces(1, :)
+    ! print *, "force_(2): ", forces(2, :)
+    ! print *, "force_(3): ", forces(3, :)
 
     ! ser = (/d_AB, d_AC, d_BC/)
     ! call jpca15(ser, er, der)
