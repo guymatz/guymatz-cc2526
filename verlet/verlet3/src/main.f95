@@ -95,7 +95,7 @@ program main
         END IF
     END DO
 
-! Read atoms, etc. from data file
+! Read atoms, etc from data file
     open (UNIT=11, FILE=file_name, STATUS="old", ACTION="read")
     read (unit=11, FMT=*) nk, tau
     read (unit=11, FMT=*) delta
@@ -142,6 +142,10 @@ program main
 
 ! Initial Force for particles
     call compute_force(x, delta, f)
+    print *, "Initial Forces: "
+    do i = 1, 3, 1
+        print *, "  Atom:", i, ": ", f(i, :)
+    end do
 
     ! Iterate!
     do k = 1, nk, 1
