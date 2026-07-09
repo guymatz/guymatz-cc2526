@@ -3,6 +3,7 @@
 #STDF= -std=f95
 FC=gfortran
 #FFLAGS = -g -fbacktrace -fcheck=all -Wall
+FFLAGS = -g -fbacktrace -Wall
 
 # all: TARGET1 TARGET2
 
