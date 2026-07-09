@@ -1,0 +1,122 @@
+\documentclass[letterpaper,11pt,leqno]{article}
+\usepackage{paper}
+\bibliographystyle{paper}
+
+% Enter paper title to populate PDF metadata:
+\hypersetup{pdftitle={Velocity Verlet in 3D}}
+
+% Enter path to BibTeX file with references:
+\newcommand{\bib}{paper.bib}
+
+% Enter path to PDF file with figures:
+\newcommand{\pdf}{figures.pdf}
+
+\begin{document}
+
+\begin{titlepage}
+
+% Enter title:
+\title{Velocity Verlet in 3-D}
+% Enter authors:
+\author{Guy Matz}
+% Enter affiliations and acknowledgements:
+% \thanks{Guy Matz: Chemistry Department, University of Padua}
+
+% Enter date:
+% \date{2026-07-09}
+% Enter paper URL (can be commented out):
+% \paperurl{https://github.com/guymatz/guymatz-cc2526/verlet/verlet3/paper}
+\maketitle
+
+% Enter abstract:
+This is the abstract. 
+
+\end{titlepage}
+
+% Enter main text:
+\section{Introduction}\label{s:introduction}
+ 
+\paragraph{Research question} Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+\footnote{Excepteur sint, sunt in culpa qui officia deserunt mollit anim id est laborum.}
+
+\paragraph{Answer to the question} Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\footnote{Sunt in culpa qui
+officia deserunt mollit anim id est laborum. Excepteur sint occaecat cupidatat non proident. Sunt in
+culpa qui officia deserunt mollit anim id est laborum. Excepteur sint occaecat cupidatat non
+proident. Sunt in culpa qui officia deserunt mollit anim id est laborum. Excepteur sint occaecat
+cupidatat non proident.}
+
+\paragraph{Positioning in the literature} Sed ut perspiciatis, unde omnis iste natus error sit 
+
+\paragraph{A paragraph} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+\paragraph{Another paragraph} Maecenas nec risus nec nibh hendrerit ultricies.
+
+\paragraph{Yet another paragraph} Curabitur maximus libero id magna bibendum fringilla.
+
+\paragraph{A final introduction paragraph} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+\section{Generic section}\label{s:section}
+
+This is a section. This is the section introduction. Below are the subsections.
+
+\subsection{Generic subsection}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi.
+
+
+\subsection{Subsection with references} 
+
+% References can be appended at the end of a sentence, in parenthesis \citep{MS15}. References can also include page numbers or other bibliographical information \citep[p. 1305]{MS19}.  References can be in text: for instance, \citet{M12} found this and \citet[figure 1]{M14} found that. It's also possible to collate several references to the same author: for instance, \citet{M12,M14} found things. References from the same authors and same year appear as follows: \citet{LMS18a,LMS18b} wrote something. It is also possible to cite the authors of a study by name, or the year of a study: for instance, \citeauthor{EMM21} wrote a paper in \citeyear{EMM21} on this topic.
+
+\subsection{Subsection with paragraphs}
+
+\paragraph{Paragraph heading} Aenean fermentum purus id lacus volutpat,
+
+\paragraph{Another paragraph with some numbers and special characters} Pellentesque habitant 25\% morbi 
+
+\subsection{Subsection with URL}
+
+It is possible to insert URLs, such as the URL for this paper template's repository: \url{https://github.com/pmichaillat/latex-paper}.
+
+\section{Section with math}\label{s:math}
+
+This section displays a number of mathematical expressions to showcase the math fonts used in the template.
+
+\subsection{Roman letters} 
+
+The Roman characters in math are just the same as the characters in the text---but in \textit{italic}. Here are some small letters: 
+\begin{equation*}
+a\{p - r \times l\} + \frac{w(g/z+j)}{i(t)+j(t)+k(t) - e^p - x^j} + \frac{h[f]+x^f}{k[y]-e^y + x^y} = f(j)^{6+y} - i^3_{g,j,p} \approx (p_{ji})^5.
+\end{equation*}
+Here are some capital letters as well: 
+\begin{equation*}
+G[p + P^7-Q] - A_B + L\{j\} = F(X) \to [Y+K]\times Z_f/H - [g_4 - i],\;\text{for any}\;i.
+\end{equation*}
+
+\subsection{Some equations} 
+
+\section{Section with graphs}\label{s:graphs}
+
+Here is a section with a variety of graphs. At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. 
+
+\subsection{Subsection with graphs at the top of the page}
+
+A simple two-panel graph is on figure \ref{f:graph1}. It will be placed at the top of the page, just about here. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae.
+
+\begin{figure}[t]
+\subcaptionbox{A first panel, 1951--2019\label{f:panelA}}{\includegraphics[scale=0.2,page=1]{\pdf}}\hfill
+\subcaptionbox{A second panel, 1951--2019\label{f:panelB}}{\includegraphics[scale=0.2,page=2]{\pdf}}
+\caption{Graph with two panels}
+\note{This is a note for the graph. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus.}
+\label{f:graph1}\end{figure}
+
+\subsection{References to figures and panels} 
+
+% As usual with LaTeX, it is easy to refer to a figure: see figure \ref{f:graph1}. It is possible to refer to a specific panel in a figure, for instance figure \ref{f:panelA} or figure \ref{f:panelB}. Its also possible to refer to the entire figure, for instance figure \ref{f:graph1} or figure \ref{f:graph2}.
+
+\subsection{A subsection with a full-page figure}
+
+% Here is a full-page figure (figure \ref{f:graph2}). It will be placed in a full page about here. At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
+
+\end{document}
