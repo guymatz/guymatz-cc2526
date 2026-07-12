@@ -29,51 +29,46 @@
 \maketitle
 
 % Enter abstract:
+The ``Volcity Verlet'' algorithm is implemented in order to predict the location of three
+particles in a system
+
+Summarize all aspects of the report, including purpose, method, results, conclusions, and recommendations. There are no graphs, charts, tables, or images in an abstract. Similarly, an abstract does not include a bibliography or references.
+
+Highlight important discoveries or anomalies. It's okay if the experiment did not go as planned and necessary to state the outcome in the abstract.
+\end{titlepage}
+
+% Enter main text:
+\section{Introduction}\label{s:introduction}
 In the field of Chemistry, predicting how individual molecules will move is crucial to 
 understanding the interaction of molecules in a system.  This gives the chemist a view
 of the evolution of a system and can be helpful in predicting dynamical and structural 
 properties of a collection of interacting molecules.
-
-
+\\~\\
 Newton's equations of motion have historically been used to estimate the trajectories of 
 interacting molecules.  One might use a method such as Euler's for determining numerical 
 solutions to Newton's equations, however in the last century a new method was 
 discovered by the French physicist Loup Verlet.  The so-called ``Verlet Integration'' provides
 a more accurate method for numerical integration of equations of motion.
-
+\\~\\
 An implementation of the Verlet algorithm in Fortran is included in the supplemental 
-materials.  
-
-The JPCA15 algorithm --- provided by Rampino, et al, --- gives us the mechanism for computing
-the ``potential energy and the vector of the derivatives of the potential with
-respect to the inter---atomic distances''.
+materials.  With it we are able to determine the location of three molecules in 3D space.
+\\~\\
+The JPCA15 algorithm\footnote{Rampino S, The Journal of Physical Chemistry A 120, 4683--4692,
+2016} gives us the mechanism for computing the ``potential energy and the vector of the
+derivatives of the potential with respect to the inter---atomic distances''.
+The Lennard-Jones algorithm is typically used to calculate potential energy, however here
+we use the JPCA15 algorithm as it allows us to compute potentials for three interacting
+particles, rather than the two allowed for by Lennard-Jones.
+We use these results as input to our Velocity Verlet algorithm.
 
 One thing to note: Numerical integrations are, by nature, inaccurate.  Errors accumulate . . .
-
-\end{titlepage}
-
-% Enter main text:
-\section{Introduction}\label{s:introduction}
  
-\paragraph{Research question} Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-\footnote{Excepteur sint, sunt in culpa qui officia deserunt mollit anim id est laborum.}
-
-\paragraph{Answer to the question} Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\footnote{Sunt in culpa qui
-officia deserunt mollit anim id est laborum. Excepteur sint occaecat cupidatat non proident. Sunt in
-culpa qui officia deserunt mollit anim id est laborum. Excepteur sint occaecat cupidatat non
-proident. Sunt in culpa qui officia deserunt mollit anim id est laborum. Excepteur sint occaecat
-cupidatat non proident.}
-
-\paragraph{Positioning in the literature} Sed ut perspiciatis, unde omnis iste natus error sit 
-
-\paragraph{A paragraph} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
-\paragraph{Another paragraph} Maecenas nec risus nec nibh hendrerit ultricies.
-
-\paragraph{Yet another paragraph} Curabitur maximus libero id magna bibendum fringilla.
-
-\paragraph{A final introduction paragraph} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+The
+literature\footnote{https://pythoninchemistry.org/ch40208/molecular_dynamics/choosing_the_right_timestep.html}
+recommends using a timestep of ``one-tenth of the period of the fastest vibration in your
+system.  For systems containing hydrogen atoms, this typically means using timesteps of around
+0.5 to 1.0 femtoseconds''.  Our system contains only hydrogen atoms, so we proceed with a 
+timestep of 0.5 femtoseconds.
 
 \section{Generic section}\label{s:section}
 
@@ -94,24 +89,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi.
 
 \paragraph{Another paragraph with some numbers and special characters} Pellentesque habitant 25\% morbi 
 
-\subsection{Subsection with URL}
-
-It is possible to insert URLs, such as the URL for this paper template's repository: \url{https://github.com/pmichaillat/latex-paper}.
-
 \section{Section with math}\label{s:math}
 
 This section displays a number of mathematical expressions to showcase the math fonts used in the template.
-
-\subsection{Roman letters} 
-
-The Roman characters in math are just the same as the characters in the text---but in \textit{italic}. Here are some small letters: 
-\begin{equation*}
-a\{p - r \times l\} + \frac{w(g/z+j)}{i(t)+j(t)+k(t) - e^p - x^j} + \frac{h[f]+x^f}{k[y]-e^y + x^y} = f(j)^{6+y} - i^3_{g,j,p} \approx (p_{ji})^5.
-\end{equation*}
-Here are some capital letters as well: 
-\begin{equation*}
-G[p + P^7-Q] - A_B + L\{j\} = F(X) \to [Y+K]\times Z_f/H - [g_4 - i],\;\text{for any}\;i.
-\end{equation*}
 
 \subsection{Some equations} 
 
@@ -133,9 +113,5 @@ A simple two-panel graph is on figure \ref{f:graph1}. It will be placed at the t
 \subsection{References to figures and panels} 
 
 % As usual with LaTeX, it is easy to refer to a figure: see figure \ref{f:graph1}. It is possible to refer to a specific panel in a figure, for instance figure \ref{f:panelA} or figure \ref{f:panelB}. Its also possible to refer to the entire figure, for instance figure \ref{f:graph1} or figure \ref{f:graph2}.
-
-\subsection{A subsection with a full-page figure}
-
-% Here is a full-page figure (figure \ref{f:graph2}). It will be placed in a full page about here. At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
 
 \end{document}

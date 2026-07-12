@@ -29,7 +29,7 @@ program test
 ! Initialization
     nk = 6000                                     ! nk
     tau = 0.2                                     ! tau
-    delta = 0.1                                          ! delta
+    delta = 0.5                                          ! delta
     ! atom A
     mass(1) = 1.0080
     x(1, :) = (/-10.0, 0.0, 0.0/)          ! x, y, z
