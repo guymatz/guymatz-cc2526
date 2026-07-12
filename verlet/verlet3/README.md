@@ -30,13 +30,18 @@ visualize them through a molecular visualize (e.g.,
 
 # Notes
 
-I am starting with the following initial conditions:
+## Audio recordings
+1. https://recorder.google.com/980c897d-2a57-4002-a5ad-3eff0bfe72cd
+2. https://recorder.google.com/234570c9-b3eb-49eb-87f5-a2d1ac9dcce6
+
+## Initial Conditions
+I am starting with the following initial conditions (in atoms.dat):
 
 ```
 6000 1.0                                     ! number of iterations, tau
 3                                            ! number of atoms
-                                             ! mass, location, velocity
-1.0080 -10.0  0.0  0.0  1.0  0.0  0.0        ! m, x, y, z, vx, vy, vz
-1.0080  10.0  0.0  0.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz 
-1.0080 10.74  0.0  0.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz 
+                                             ! mass, location xyz, velocity xyz
+1.0080 -10.0  0.0  0.0  1.0  0.0  0.0        ! m,    x, y, z,      vx, vy, vz
+1.0080  10.0  0.0  0.0  0.0  0.0  0.0        ! m,    x, y, z,      vx, vy, vz 
+1.0080 10.74  0.0  0.0  0.0  0.0  0.0        ! m,    x, y, z,      vx, vy, vz 
 ```

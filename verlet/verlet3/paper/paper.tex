@@ -29,7 +29,26 @@
 \maketitle
 
 % Enter abstract:
-This is the abstract. 
+In the field of Chemistry, predicting how individual molecules will move is crucial to 
+understanding the interaction of molecules in a system.  This gives the chemist a view
+of the evolution of a system and can be helpful in predicting dynamical and structural 
+properties of a collection of interacting molecules.
+
+
+Newton's equations of motion have historically been used to estimate the trajectories of 
+interacting molecules.  One might use a method such as Euler's for determining numerical 
+solutions to Newton's equations, however in the last century a new method was 
+discovered by the French physicist Loup Verlet.  The so-called ``Verlet Integration'' provides
+a more accurate method for numerical integration of equations of motion.
+
+An implementation of the Verlet algorithm in Fortran is included in the supplemental 
+materials.  
+
+The JPCA15 algorithm --- provided by Rampino, et al, --- gives us the mechanism for computing
+the ``potential energy and the vector of the derivatives of the potential with
+respect to the inter---atomic distances''.
+
+One thing to note: Numerical integrations are, by nature, inaccurate.  Errors accumulate . . .
 
 \end{titlepage}
 

@@ -51,12 +51,13 @@ program test
     print *, "Atom B: ", x(2, :)
     print *, "Atom C: ", x(3, :)
     print *, ""
-    print *, "=========== TEST eudist distance"
+    print *, "=========== TEST eudist: Gets Euclidean distance between two atoms"
     print *, 'eudist: A - B: ', eudist(x(1, :), x(2, :))
     print *, 'eudist: A - C: ', eudist(x(1, :), x(3, :))
     print *, 'eudist: B - C: ', eudist(x(2, :), x(3, :))
     print *, ""
-    print *, "===========  TEST distance w/ delta" 
+    print *, "===========  TEST eudist_with_delta: Gets distance between two atoms after adding a small delta in each dimension" 
+    print *, "delta = ", delta
     print *, "                        p1                            p2                       d"
 
 ! Initial Distances w/ Delta
@@ -84,7 +85,7 @@ program test
 ! Test get_ser
     ! subroutine get_ser(p1, p2, p3, ser)
     print *, ""
-    print *, "======== Test get_ser:"
+    print *, "======== Test get_ser: Gets distances between 3 atoms as (AB, AC, BC)"
     CALL get_ser(x(1, :), x(2, :), x(3, :), ser)
     do i = 1, 3, 1
         print *, "Distance :", i, ":", ser(i)
@@ -93,23 +94,26 @@ program test
 ! Test get_delta_ser
     ! subroutine get_delta_ser(p1, p2, p3, delta, ser)
     print *, ""
-    print *, "======== Test get_delta_ser:"
+    print *, "======== Test get_delta_ser: Gets distances between 3 atoms as (AB, AC, BC) after adding small delta in each dimension"
+    print *, "delta = ", delta
+    print *, "                             x                             y                   z"
     CALL get_delta_ser(x(1, :), x(2, :), x(3, :), delta, ser_delta)
     do i = 1, 3, 1
         print *, "Distance :", i, ":", ser_delta(i, :)
     end do
 
-! Test compoute_force
-    print *, "", "======== TEST compute_force"
-    print *, " Initial forces:"
-    print *, "                             x                             y                 z"
+! Test compute_force
+    print *, "", "======== TEST compute_force: "
+    print *, " Initial forces:  Just to show that we are starting from (0, 0, 0)"
+    print *, "                             x                             y                   z"
     do i = 1, 3, 1
         PRINT *, "Atom #", i, ":", forces(i, :)
     end do
 
     call compute_force(x, delta, forces)
-    print *, "", "======== Computed Forces"
-    print *, "                             x                             y                 z"
+    print *, "", "======== Computed Forces: Uses jpca15 to get `der` and `delta_der` to compute  (delta_der - der) / delta"
+    print *, "delta = ", delta
+    print *, "                             x                             y                   z"
     do i = 1, 3, 1
         PRINT *, "Atom #", i, ":", forces(i, :)
     end do

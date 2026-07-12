@@ -82,7 +82,7 @@ contains
         ! jpca15 also returns er
         real(KIND=wp) :: er
         ! single_force is used to store the force on an atom in one direction/dimension
-        real(KIND=wp) :: single_force
+        !! real(KIND=wp) :: single_force
         ! We will compute `delta_ser` for input to jpca15, and stores the results in delta_der
         real(KIND=wp), DIMENSION(3) :: delta_ser, delta_der
         ! jpca15 also returns delta_er
@@ -119,12 +119,20 @@ contains
         end do
 
         ! Step 4: Update the nx3 `forces` array with the force on each atom in each dimension
-        do dimn = 1, 3, 1
-            do atom_i = 1, 3, 1
+        do atom_i = 1, 3, 1
+            do dimn = 1, 3, 1
+                print *, ""
+                print *, "Delta:", delta
                 delta_ser = (/delta_d_(1, dimn), delta_d_(2, dimn), delta_d_(3, dimn)/)
                 call jpca15(delta_ser, delta_er, delta_der)
-                single_force = (delta_der(dimn) - der(dimn)) / delta
-                forces(atom_i, dimn) = single_force
+                ! single_force = (delta_der(dimn) - der(dimn)) / delta
+                ! forces(atom_i, dimn) = single_force
+                forces(atom_i, dimn) = (delta_der(dimn) - der(dimn)) / delta
+                print *, "SER:", ser
+                print *, "DER:", der
+                print *, "delta_SER:", delta_ser
+                print *, "delta_DER:", delta_der
+                print *, "Atom #:", atom_i, ", Dimension:", dimn, ", Force:", forces(atom_i, dimn) 
             end do
         end do
         ! DONE!
