@@ -64,14 +64,14 @@ program main
         IF (arg == "-d") THEN
             i = i + 1
             CALL get_command_argument(i, arg)
-            print *, "arg -d:", arg
+            write(stderr,*) "arg -d:", arg
             read (arg, '(f33.32)') cli_delta
             IF (cli_delta == 0) THEN
                 print *, "Delta too small!"
                 print *, "main +67"
                 STOP 68
             END IF
-            ! Num steps - defaults to 2000 (see above)
+            ! Num steps - defaults to 0 (see above): Should be in data file
         ELSE IF (arg == "-s") THEN
             i = i + 1
             CALL get_command_argument(i, arg)
@@ -94,8 +94,8 @@ program main
             print '(A, A)', "    data_file - ", file_name
             print '(A, F0.9)', "        delta - ", delta
             print '(A, I0)', "        steps - ", steps
-            print *, "main +117"
-            STOP 117
+            print *, "main +97"
+            STOP 97
         END IF
     END DO
 
@@ -105,7 +105,7 @@ program main
     read (unit=11, FMT=*) delta
     read (unit=11, FMT=*) num_atoms
     !print *, nk, tau, sigma, epsilon, num_atoms
-    print *, "Number of atoms:", num_atoms
+    write(stderr,*) "Number of atoms:", num_atoms
 
     ! Let the command-line `steps` override nk, if it's set
     if (steps > 0) then
@@ -116,9 +116,9 @@ program main
         delta = cli_delta
     end if
 
-    print *, "Will use delta: ", delta
-    print *, "Will use file: ", file_name
-    print *, "Will use num steps: ", nk
+    write(stderr,*) "Will use delta: ", delta
+    write(stderr,*) "Will use file: ", file_name
+    write(stderr,*) "Will use num steps: ", nk
 
     ! Allocate arrays for position, velocity, force & mass
     ! Position
@@ -137,10 +137,10 @@ program main
         read (unit=11, FMT=*) mass(i, 1), ax, ay, az, vx, vy, vz
         x(i, :) = (/ax, ay, az/)
         v(i, :) = (/vx, vy, vz/)
-        print *, 'Particle', i, ': '
-        print *, '  Mass:', mass(i, 1)
-        print *, '  Starting Position:', x(i, :)
-        print *, '  Initial Velocity: ', v(i, :)
+        write(stderr,*) 'Particle', i, ': '
+        write(stderr,*) '  Mass:', mass(i, 1)
+        write(stderr,*) '  Starting Position:', x(i, :)
+        write(stderr,*) '  Initial Velocity: ', v(i, :)
     end do
     close (unit=11)
 
@@ -153,14 +153,16 @@ program main
     print *, "atom3", x(3, :)
 ! Initial Force for particles
     call compute_force(x, delta, f)
-    print *, "Initial Forces: "
+    write(stderr,*) "Initial Forces: "
     do i = 1, 3, 1
-        print *, "  Atom:", i, ": ", f(i, :)
+        write(stderr,*) "  Atom:", i, ": ", f(i, :)
     end do
 
     ! Iterate!
+    write(stderr,*) "  nk:", nk
     do k = 1, nk, 1
         ! Calculate x^{(a)}_{k+1}
+        write(stderr,*) "  nk:", nk, ", k:", k
         do atom_num = 1, num_atoms, 1
             do dim = 1, 3, 1 ! dimensions
                 ! Caclculate new position
@@ -173,13 +175,13 @@ program main
                                    (f(atom_num, dim) + fnext(atom_num, dim))
                 ! Assign f = fnext
                 f(atom_num, dim) = fnext(atom_num, dim)
-                print *, num_atoms
-                print *, "Here is a comment!"
-                print *, "atom1", x(1, :)
-                print *, "atom2", x(2, :)
-                print *, "atom3", x(3, :)
             end do
         end do
+        print *, num_atoms
+        print *, "Here is a comment!"
+        print *, "atom1", x(1, :)
+        print *, "atom2", x(2, :)
+        print *, "atom3", x(3, :)
     end do
 
 ! Cleanup

@@ -4,6 +4,7 @@ module verlet
     ! implicit none
     ! private
     ! public :: eudist, eudist_with_delta, compute_force, get_ser, get_delta_ser
+    use,intrinsic :: iso_fortran_env, only : stderr=>ERROR_UNIT
 
 contains
 
@@ -95,6 +96,8 @@ contains
         ! for looping
         integer :: dimn, atom_i
 
+        write(stderr,*) "----- compute_forces"
+
         ! Step 1 of calculating forces: - get euclidean distances between points
         d_(1) = eudist(points(1, :), points(2, :))
         d_(2) = eudist(points(1, :), points(3, :))
@@ -121,19 +124,19 @@ contains
         ! Step 4: Update the nx3 `forces` array with the force on each atom in each dimension
         do atom_i = 1, 3, 1
             do dimn = 1, 3, 1
-                ! print *, ""
-                ! print *, "Delta:", delta
+                write(stderr,*) ""
+                write(stderr,*) "Delta:", delta, "Atom:", atom_i, "Dim:", dimn
                 delta_ser = (/delta_d_(1, dimn), delta_d_(2, dimn), delta_d_(3, dimn)/)
                 call jpca15(delta_ser, delta_er, delta_der)
                 ! single_force = (delta_der(dimn) - der(dimn)) / delta
                 ! forces(atom_i, dimn) = single_force
                 forces(atom_i, dimn) = (delta_der(dimn) - der(dimn)) / delta
 
-                ! print *, "SER:", ser
-                ! print *, "DER:", der
-                ! print *, "delta_SER:", delta_ser
-                ! print *, "delta_DER:", delta_der
-                ! print *, "Atom #:", atom_i, ", Dimension:", dimn, ", Force:", forces(atom_i, dimn) 
+                write(stderr,*) "SER:", ser
+                write(stderr,*) "DER:", der
+                write(stderr,*) "delta_SER:", delta_ser
+                write(stderr,*) "delta_DER:", delta_der
+                write(stderr,*) "Atom #:", atom_i, ", Dimension:", dimn, ", Force:", forces(atom_i, dimn) 
 
             end do
         end do
