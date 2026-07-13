@@ -27,17 +27,18 @@
 % Enter paper URL (can be commented out):
 % \paperurl{https://github.com/guymatz/guymatz-cc2526/verlet/verlet3/paper}
 \maketitle
-
-% Enter abstract:
-The ``Volcity Verlet'' algorithm is implemented in order to predict the location of three
+% Abstract:
+The ``Velocity Verlet'' algorithm is implemented in order to predict the location of three
 particles in a system
-
+\\~\\
+\\~\\
 Summarize all aspects of the report, including purpose, method, results, conclusions, and recommendations. There are no graphs, charts, tables, or images in an abstract. Similarly, an abstract does not include a bibliography or references.
-
-Highlight important discoveries or anomalies. It's okay if the experiment did not go as planned and necessary to state the outcome in the abstract.
+\\~\\
+Highlight important discoveries or anomalies. It's okay if the experiment did not go as planned and
+necessary to state the outcome in the abstract.
 \end{titlepage}
 
-% Enter main text:
+%% Introduction
 \section{Introduction}\label{s:introduction}
 In the field of Chemistry, predicting how individual molecules will move is crucial to 
 understanding the interaction of molecules in a system.  This gives the chemist a view
@@ -61,41 +62,41 @@ we use the JPCA15 algorithm as it allows us to compute potentials for three inte
 particles, rather than the two allowed for by Lennard-Jones.
 We use these results as input to our Velocity Verlet algorithm.
 
-One thing to note: Numerical integrations are, by nature, inaccurate.  Errors accumulate . . .
+One thing to note: Numerical integrations are, by nature, inaccurate.  Errors accumulate \dots
  
 The
-literature\footnote{https://pythoninchemistry.org/ch40208/molecular_dynamics/choosing_the_right_timestep.html}
+literature\footnote{https://pythoninchemistry.org/ch40208/molecular\_dynamics/choosing\_the\_right\_timestep.html}
 recommends using a timestep of ``one-tenth of the period of the fastest vibration in your
 system.  For systems containing hydrogen atoms, this typically means using timesteps of around
 0.5 to 1.0 femtoseconds''.  Our system contains only hydrogen atoms, so we proceed with a 
 timestep of 0.5 femtoseconds.
 
-\section{Generic section}\label{s:section}
+\section{Experimental Section}\label{s:experiment}
 
-This is a section. This is the section introduction. Below are the subsections.
-
-\subsection{Generic subsection}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi.
-
+The initial setup of the system is three hydrogen atoms --- $A, B, \&\ C$ --- in 3D space,
+arranged along the x-axis as follows:
+\begin{itemize}
+  \item $H_A$ @ (-10, 0, 0)
+  \item $H_B$ @ (10, 0, 0)
+  \item $H_C$ @ (10.7, 0, 0)
+\end{itemize}
+We experiment with different `initial velocities' in order to find at least one non-reactive
+and one reactive trajectory.  We are working solely in the $x$ ``direction'' so we can ``play''
+with the velocity of atom $A$ in our setup.  We start with an initial velocity of 0.1 for
+$A_x$, and increase to 1.0 by steps of 0.1.
 
 \subsection{Subsection with references} 
 
 % References can be appended at the end of a sentence, in parenthesis \citep{MS15}. References can also include page numbers or other bibliographical information \citep[p. 1305]{MS19}.  References can be in text: for instance, \citet{M12} found this and \citet[figure 1]{M14} found that. It's also possible to collate several references to the same author: for instance, \citet{M12,M14} found things. References from the same authors and same year appear as follows: \citet{LMS18a,LMS18b} wrote something. It is also possible to cite the authors of a study by name, or the year of a study: for instance, \citeauthor{EMM21} wrote a paper in \citeyear{EMM21} on this topic.
 
-\subsection{Subsection with paragraphs}
 
-\paragraph{Paragraph heading} Aenean fermentum purus id lacus volutpat,
-
-\paragraph{Another paragraph with some numbers and special characters} Pellentesque habitant 25\% morbi 
-
-\section{Section with math}\label{s:math}
+\section{Results}\label{s:results}
 
 This section displays a number of mathematical expressions to showcase the math fonts used in the template.
 
 \subsection{Some equations} 
 
-\section{Section with graphs}\label{s:graphs}
+\section{Discussion}\label{s:discussion}
 
 Here is a section with a variety of graphs. At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. 
 
@@ -111,6 +112,8 @@ A simple two-panel graph is on figure \ref{f:graph1}. It will be placed at the t
 \label{f:graph1}\end{figure}
 
 \subsection{References to figures and panels} 
+
+\section{Conclusion}\label{s:conclusion}
 
 % As usual with LaTeX, it is easy to refer to a figure: see figure \ref{f:graph1}. It is possible to refer to a specific panel in a figure, for instance figure \ref{f:panelA} or figure \ref{f:panelB}. Its also possible to refer to the entire figure, for instance figure \ref{f:graph1} or figure \ref{f:graph2}.
 
