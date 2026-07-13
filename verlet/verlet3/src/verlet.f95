@@ -121,18 +121,20 @@ contains
         ! Step 4: Update the nx3 `forces` array with the force on each atom in each dimension
         do atom_i = 1, 3, 1
             do dimn = 1, 3, 1
-                print *, ""
-                print *, "Delta:", delta
+                ! print *, ""
+                ! print *, "Delta:", delta
                 delta_ser = (/delta_d_(1, dimn), delta_d_(2, dimn), delta_d_(3, dimn)/)
                 call jpca15(delta_ser, delta_er, delta_der)
                 ! single_force = (delta_der(dimn) - der(dimn)) / delta
                 ! forces(atom_i, dimn) = single_force
                 forces(atom_i, dimn) = (delta_der(dimn) - der(dimn)) / delta
-                print *, "SER:", ser
-                print *, "DER:", der
-                print *, "delta_SER:", delta_ser
-                print *, "delta_DER:", delta_der
-                print *, "Atom #:", atom_i, ", Dimension:", dimn, ", Force:", forces(atom_i, dimn) 
+
+                ! print *, "SER:", ser
+                ! print *, "DER:", der
+                ! print *, "delta_SER:", delta_ser
+                ! print *, "delta_DER:", delta_der
+                ! print *, "Atom #:", atom_i, ", Dimension:", dimn, ", Force:", forces(atom_i, dimn) 
+
             end do
         end do
         ! DONE!
