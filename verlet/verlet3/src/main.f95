@@ -1,6 +1,10 @@
 program main
+! 1verbose set fdm?
+
 
 ! Var definitions, etc
+    ! For printing to STDERR
+    use,intrinsic :: iso_fortran_env, only : stderr=>ERROR_UNIT
     use kinds, ONLY: wp => dp
     use verlet
     implicit none
@@ -65,7 +69,7 @@ program main
             IF (cli_delta == 0) THEN
                 print *, "Delta too small!"
                 print *, "main +67"
-                STOP 67
+                STOP 68
             END IF
             ! Num steps - defaults to 2000 (see above)
         ELSE IF (arg == "-s") THEN
@@ -140,6 +144,13 @@ program main
     end do
     close (unit=11)
 
+! print initial output for XYZ data file -
+    ! https://en.wikipedia.org/wiki/XYZ_file_format
+    print *, num_atoms
+    print *, "Here is a comment!"
+    print *, "atom1", x(1, :)
+    print *, "atom2", x(2, :)
+    print *, "atom3", x(3, :)
 ! Initial Force for particles
     call compute_force(x, delta, f)
     print *, "Initial Forces: "
@@ -162,13 +173,14 @@ program main
                                    (f(atom_num, dim) + fnext(atom_num, dim))
                 ! Assign f = fnext
                 f(atom_num, dim) = fnext(atom_num, dim)
+                print *, num_atoms
+                print *, "Here is a comment!"
+                print *, "atom1", x(1, :)
+                print *, "atom2", x(2, :)
+                print *, "atom3", x(3, :)
             end do
         end do
     end do
-
-    print *, 'p1: ', x(1, :)
-    print *, 'p2: ', x(2, :)
-    print *, 'p3: ', x(3, :)
 
 ! Cleanup
     deallocate (x)
