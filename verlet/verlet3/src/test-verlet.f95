@@ -111,7 +111,7 @@ program test
     end do
 
     call compute_force(x, delta, forces)
-    print *, "", "======== Computed Forces: Uses jpca15 to get `der` and `delta_der` to compute  (delta_der - der) / delta"
+    print *, "", "======== Computed Forces: Uses jpca15 to get `er` and `delta_er` to compute  (delta_er - er) / delta"
     print *, "delta = ", delta
     print *, "                             x                             y                   z"
     do i = 1, 3, 1

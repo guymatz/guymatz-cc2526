@@ -11,9 +11,11 @@ program main
 
 ! vars
     ! for looping by atoms & dimension
-    integer :: atom_num, dim
+    integer :: atom_num, dimn
 
-    LOGICAL :: OK
+    LOGICAL :: OK = .FALSE.
+    ! For requesting xyz file output
+    LOGICAL :: XYZ = .FALSE.
     CHARACTER(len=32) :: arg
     CHARACTER(len=32) :: file_name = "atoms.dat"
     !integer :: arg_len
@@ -88,12 +90,16 @@ program main
                 print *, "main +108"
                 STOP 108
             END IF
+        ELSE IF (arg == "-x") THEN
+            XYZ = .TRUE.
         ELSE
-            print *, "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ]"
+            print *, "Arg used: ", arg
+            print *, "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ] [-x]"
             print *, "DEFAULTS:"
             print '(A, A)', "    data_file - ", file_name
             print '(A, F0.9)', "        delta - ", delta
             print '(A, I0)', "        steps - ", steps
+            print '(L1)', "     xyz file - ", XYZ
             print *, "main +97"
             STOP 97
         END IF
@@ -119,6 +125,7 @@ program main
     write(stderr,*) "Will use delta: ", delta
     write(stderr,*) "Will use file: ", file_name
     write(stderr,*) "Will use num steps: ", nk
+    write(stderr,*) "Will print XYZ file: ", XYZ
 
     ! Allocate arrays for position, velocity, force & mass
     ! Position
@@ -146,11 +153,13 @@ program main
 
 ! print initial output for XYZ data file -
     ! https://en.wikipedia.org/wiki/XYZ_file_format
-    print *, num_atoms
-    print *, "Here is a comment!"
-    print *, "atom1", x(1, :)
-    print *, "atom2", x(2, :)
-    print *, "atom3", x(3, :)
+    if (XYZ) then
+        print *, num_atoms
+        print *, "Here is a comment!"
+        print *, "atom1", x(1, :)
+        print *, "atom2", x(2, :)
+        print *, "atom3", x(3, :)
+    end if
 ! Initial Force for particles
     call compute_force(x, delta, f)
     write(stderr,*) "Initial Forces: "
@@ -158,30 +167,35 @@ program main
         write(stderr,*) "  Atom:", i, ": ", f(i, :)
     end do
 
-    ! Iterate!
+  ! Iterate!
     write(stderr,*) "  nk:", nk
     do k = 1, nk, 1
         ! Calculate x^{(a)}_{k+1}
         write(stderr,*) "  nk:", nk, ", k:", k
         do atom_num = 1, num_atoms, 1
-            do dim = 1, 3, 1 ! dimensions
+            do dimn = 1, 1, 1 ! dimensions
                 ! Caclculate new position
-                x(atom_num, dim) = x(atom_num, dim) + tau * v(atom_num, dim) &
-                                   + tau**2 * f(atom_num, dim) / (2 * mass(atom_num, dim))
+                x(atom_num, dimn) = x(atom_num, dimn) + tau * v(atom_num, dimn) &
+                                   + tau**2 * f(atom_num, dimn) / (2 * mass(atom_num, dimn))
                 ! calculate fnext
                 call compute_force(x, delta, f)
+        write(stderr,*) "  computed f:", f
                 ! Calculate new velocity
-                v(atom_num, dim) = v(atom_num, dim) + tau / (2 * mass(atom_num, dim)) * &
-                                   (f(atom_num, dim) + fnext(atom_num, dim))
+                v(atom_num, dimn) = v(atom_num, dimn) + tau / (2 * mass(atom_num, dimn)) * &
+                                   (f(atom_num, dimn) + fnext(atom_num, dimn))
                 ! Assign f = fnext
-                f(atom_num, dim) = fnext(atom_num, dim)
+                f(atom_num, dimn) = fnext(atom_num, dimn)
             end do
         end do
-        print *, num_atoms
-        print *, "Here is a comment!"
-        print *, "atom1", x(1, :)
-        print *, "atom2", x(2, :)
-        print *, "atom3", x(3, :)
+
+        if (XYZ) then
+            print *, num_atoms
+            print *, "step:", k
+            print *, "atom1", x(1, :)
+            print *, "atom2", x(2, :)
+            print *, "atom3", x(3, :)
+        end if
+
     end do
 
 ! Cleanup
