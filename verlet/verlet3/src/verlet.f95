@@ -106,7 +106,7 @@ contains
         d_(3) = eudist(points(2, :), points(3, :))
         ! Step 2 of calculating forces: - pass distances as to jpca15 as `ser`
         ser = (/d_(1), d_(2), d_(3)/)
-        print *, "SER: ", ser
+        write(stderr,*) "SER: ", ser
         call jpca15(ser, er, der)
 
         ! Step 3 of calculating forces: - get euclidean distances between points + delta
@@ -117,7 +117,7 @@ contains
         end do
 
         do atom_i = 1, 3, 1
-            print *, "Delta D: ", atom_i, delta_d_(atom_i, :)
+            ! print *, "Delta D: ", atom_i, delta_d_(atom_i, :)
         end do
 
         ! Step 3.5: I don't think I need to do this, but let's initialize the forces to 0
@@ -130,54 +130,56 @@ contains
         ! Step 4: Update the nx3 `forces` array with the force on each atom in each dimension
         ! Atom 1
         delta_ser = (/delta_d_(1, 1), delta_d_(2, 1), d_(3)/)
-        print *, "A-B, 1", delta_ser
         call jpca15(delta_ser, delta_er, delta_der)
         forces(1, 1) = (delta_er - er) / delta
+        ! print *, "A, x", delta_ser, forces(1, 1)
 
         ! For y & z dimension we only have delta, since the atoms are positioned at (x, 0, 0)
-        delta_ser = (/delta_d_(1, 2), delta_d_(2, 2), 0.0_wp/)
-        print *, "A-B, 2", delta_ser
+        delta_ser = (/delta_d_(1, 2), delta_d_(2, 2), d_(3)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(1, 2) = (delta_er - er) / delta
+        ! print *, "A, y", delta_ser, forces(1, 2)
 
-        delta_ser = (/delta, delta, 0.0_wp/)
-        print *, "A-B, 3", delta_ser
+        delta_ser = (/delta_d_(1, 3), delta_d_(2, 3), d_(3)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(1, 3) = (delta_er - er) / delta
+        ! print *, "A, z", delta_ser, delta_er, forces(1, 3)
 
         ! Atom 2
-        delta_ser = (/delta_d_(1, 1), delta_d_(2, 1), d_(3)/)
-        print *, "A-C, 1", delta_ser
+        delta_ser = (/delta_d_(1, 1), d_(2), delta_d_(3, 1)/)
         call jpca15(delta_ser, delta_er, delta_der)
-        forces(1, 1) = (delta_er - er) / delta
+        forces(2, 1) = (delta_er - er) / delta
+        ! print *, "B, x", delta_ser, forces(2, 1)
 
-        delta_ser = (/delta, delta, 0.0_wp/)
-        print *, "A-C, 2", delta_ser
+        delta_ser = (/delta_d_(1, 2), d_(2), delta_d_(3, 2)/)
         call jpca15(delta_ser, delta_er, delta_der)
-        forces(1, 2) = (delta_er - er) / delta
+        forces(2, 2) = (delta_er - er) / delta
+        ! print *, "B, y", delta_ser, forces(2, 2)
 
-        delta_ser = (/delta, delta, 0.0_wp/)
-        print *, "A-C, 3", delta_ser
+        delta_ser = (/delta_d_(1, 3), d_(2), delta_d_(3, 3)/)
         call jpca15(delta_ser, delta_er, delta_der)
-        forces(1, 3) = (delta_er - er) / delta
+        forces(2, 3) = (delta_er - er) / delta
+        ! print *, "B, z", delta_ser, delta_er, forces(2, 3)
 
         ! Atom 3
         delta_ser = (/d_(1), delta_d_(2, 1), delta_d_(3, 1)/)
-        print *, "B-C, 1", delta_ser
         call jpca15(delta_ser, delta_er, delta_der)
-        forces(1, 1) = (delta_er - er) / delta
+        forces(3, 1) = (delta_er - er) / delta
+        ! print *, "C, x", delta_ser, forces(3, 1)
 
-        delta_ser = (/0.0_wp, delta, delta/)
-        print *, "B-C, 2", delta_ser
+        delta_ser = (/d_(1), delta_d_(2, 2), delta_d_(3, 2)/)
         call jpca15(delta_ser, delta_er, delta_der)
-        forces(1, 2) = (delta_er - er) / delta
+        forces(3, 2) = (delta_er - er) / delta
+        ! print *, "C, y", delta_ser, forces(3, 2)
 
-        delta_ser = (/0.0_wp, delta, delta/)
-        print *, "B-C, 3", delta_ser
+        delta_ser = (/d_(1), delta_d_(2, 3), delta_d_(3, 3)/)
         call jpca15(delta_ser, delta_er, delta_der)
-        forces(1, 3) = (delta_er - er) / delta
+        forces(3, 3) = (delta_er - er) / delta
+        ! print *, "C, z", delta_ser, delta_er, forces(3, 3)
 
-
+        ! do atom_i = 1, 3, 1
+        !   ! print *, "Atom:", atom_i, forces(atom_i, :)
+        ! end do
 
         ! DONE!
     end subroutine compute_force
