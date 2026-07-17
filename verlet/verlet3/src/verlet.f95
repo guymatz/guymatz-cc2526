@@ -54,6 +54,7 @@ contains
     end subroutine get_delta_ser
 
     real(KIND=wp) function eudist_with_delta(p1, p2, delta, dimn) result(dist)
+        ! delta_d_(1, dimn) = eudist_with_delta(points(1, :), points(2, :), delta, dimn)
         use kinds, ONLY: wp => dp
         implicit none
         ! Two points
@@ -62,10 +63,13 @@ contains
         real(KIND=wp), intent(in) :: delta
         ! Dimension which to add delta
         integer, intent(in) :: dimn
-        ! distance to return
-        !real(KIND=wp), intent(out) :: dist
+        ! New point with delta added to proper dimension
+        real(KIND=wp), DIMENSION(3) :: p1_delta
+        p1_delta = p1
+        p1_delta(dimn) = p1_delta(dimn) + delta
+        ! Distance to return
         !!!!!   NOT Adding delta to second atom.  Only the first
-        dist = SQRT((p1(dimn) + delta - p2(dimn))**2)
+        dist = eudist(p1_delta, p2)
         ! print *, "Dim:", dimn, "p1:", p1(dimn), "p2:", p2(dimn), " -> ", dist
     end function eudist_with_delta
 
@@ -82,8 +86,6 @@ contains
         real(KIND=wp), DIMENSION(3) :: ser, der
         ! jpca15 also returns er
         real(KIND=wp) :: er
-        ! single_force is used to store the force on an atom in one direction/dimension
-        !! real(KIND=wp) :: single_force
         ! We will compute `delta_ser` for input to jpca15, and stores the results in delta_der
         real(KIND=wp), DIMENSION(3) :: delta_ser, delta_der
         ! jpca15 also returns delta_er
@@ -104,14 +106,18 @@ contains
         d_(3) = eudist(points(2, :), points(3, :))
         ! Step 2 of calculating forces: - pass distances as to jpca15 as `ser`
         ser = (/d_(1), d_(2), d_(3)/)
+        print *, "SER: ", ser
         call jpca15(ser, er, der)
-        ! Step 2 of calculating forces: - and get back er & der.  We dont use `er`
 
         ! Step 3 of calculating forces: - get euclidean distances between points + delta
         do dimn = 1, 3, 1
             delta_d_(1, dimn) = eudist_with_delta(points(1, :), points(2, :), delta, dimn)
             delta_d_(2, dimn) = eudist_with_delta(points(1, :), points(3, :), delta, dimn)
             delta_d_(3, dimn) = eudist_with_delta(points(2, :), points(3, :), delta, dimn)
+        end do
+
+        do atom_i = 1, 3, 1
+            print *, "Delta D: ", atom_i, delta_d_(atom_i, :)
         end do
 
         ! Step 3.5: I don't think I need to do this, but let's initialize the forces to 0
@@ -122,24 +128,57 @@ contains
         end do
 
         ! Step 4: Update the nx3 `forces` array with the force on each atom in each dimension
-        do atom_i = 1, 3, 1
-            do dimn = 1, 3, 1
-                write(stderr,*) ""
-                write(stderr,*) "Delta:", delta, "Atom:", atom_i, "Dim:", dimn
-                delta_ser = (/delta_d_(1, dimn), delta_d_(2, dimn), delta_d_(3, dimn)/)
-                call jpca15(delta_ser, delta_er, delta_der)
-                ! single_force = (delta_der(dimn) - der(dimn)) / delta
-                ! forces(atom_i, dimn) = single_force
-                forces(atom_i, dimn) = (delta_der(dimn) - der(dimn)) / delta
+        ! Atom 1
+        delta_ser = (/delta_d_(1, 1), delta_d_(2, 1), d_(3)/)
+        print *, "A-B, 1", delta_ser
+        call jpca15(delta_ser, delta_er, delta_der)
+        forces(1, 1) = (delta_er - er) / delta
 
-                write(stderr,*) "SER:", ser
-                write(stderr,*) "DER:", der
-                write(stderr,*) "delta_SER:", delta_ser
-                write(stderr,*) "delta_DER:", delta_der
-                write(stderr,*) "Atom #:", atom_i, ", Dimension:", dimn, ", Force:", forces(atom_i, dimn) 
+        ! For y & z dimension we only have delta, since the atoms are positioned at (x, 0, 0)
+        delta_ser = (/delta_d_(1, 2), delta_d_(2, 2), 0.0_wp/)
+        print *, "A-B, 2", delta_ser
+        call jpca15(delta_ser, delta_er, delta_der)
+        forces(1, 2) = (delta_er - er) / delta
 
-            end do
-        end do
+        delta_ser = (/delta, delta, 0.0_wp/)
+        print *, "A-B, 3", delta_ser
+        call jpca15(delta_ser, delta_er, delta_der)
+        forces(1, 3) = (delta_er - er) / delta
+
+        ! Atom 2
+        delta_ser = (/delta_d_(1, 1), delta_d_(2, 1), d_(3)/)
+        print *, "A-C, 1", delta_ser
+        call jpca15(delta_ser, delta_er, delta_der)
+        forces(1, 1) = (delta_er - er) / delta
+
+        delta_ser = (/delta, delta, 0.0_wp/)
+        print *, "A-C, 2", delta_ser
+        call jpca15(delta_ser, delta_er, delta_der)
+        forces(1, 2) = (delta_er - er) / delta
+
+        delta_ser = (/delta, delta, 0.0_wp/)
+        print *, "A-C, 3", delta_ser
+        call jpca15(delta_ser, delta_er, delta_der)
+        forces(1, 3) = (delta_er - er) / delta
+
+        ! Atom 3
+        delta_ser = (/d_(1), delta_d_(2, 1), delta_d_(3, 1)/)
+        print *, "B-C, 1", delta_ser
+        call jpca15(delta_ser, delta_er, delta_der)
+        forces(1, 1) = (delta_er - er) / delta
+
+        delta_ser = (/0.0_wp, delta, delta/)
+        print *, "B-C, 2", delta_ser
+        call jpca15(delta_ser, delta_er, delta_der)
+        forces(1, 2) = (delta_er - er) / delta
+
+        delta_ser = (/0.0_wp, delta, delta/)
+        print *, "B-C, 3", delta_ser
+        call jpca15(delta_ser, delta_er, delta_der)
+        forces(1, 3) = (delta_er - er) / delta
+
+
+
         ! DONE!
     end subroutine compute_force
 
