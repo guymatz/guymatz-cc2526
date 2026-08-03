@@ -28,7 +28,7 @@ $(TARGET1): $(OBJECTS1)
 $(TARGET2): $(OBJECTS2)
 	$(FC) $(FFLAGS) -o $(TARGET2) $(OBJECTS2)
 
-main.o: main.f95  jpca15.o kinds.o verlet.o
+main.o: main.F90  jpca15.o kinds.o verlet.o
 test-verlet.o: test-verlet.f95  jpca15.o kinds.o verlet.o
 verlet.o: verlet.f95 kinds.o
 jpca15.o: jpca15.f kinds.o
@@ -39,6 +39,10 @@ kinds.o: kinds.f95
 .SUFFIXES: .f95 .o
 .f95.o:
 	$(FC) $(STDF) $(FFLAGS) -c -I. -o $*.o $*.f95
+
+.SUFFIXES: .F90 .o
+.F90.o:
+	$(FC) $(STDF) $(FFLAGS) -c -I. -o $*.o $*.F90
 
 .SUFFIXES: .f.o
 .f.o:

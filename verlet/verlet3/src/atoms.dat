@@ -1,4 +1,4 @@
-6000 0.2                                     ! nk, tau
+6000 1                                       ! nk, tau (was 0.2)
 0.5                                          ! delta
 3                                            ! n, number of atoms
 1.0080 -10.0  0.0  0.0  1.0  0.0  0.0        ! m, x, y, z, vx, vy, vz

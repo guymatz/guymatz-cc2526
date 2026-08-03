@@ -1,7 +1,6 @@
 program main
 ! 1verbose set fdm?
 
-
 ! Var definitions, etc
     ! For printing to STDERR
     use,intrinsic :: iso_fortran_env, only : stderr=>ERROR_UNIT
@@ -34,15 +33,15 @@ program main
     ! Force vectors (in the x-direction only)
     !real(KIND=wp), DIMENSION(3) :: f_AB, f_AC, f_BC, force
     ! for reading in atomic data from file
-    integer :: nk
+    integer :: nk, nk_cli=0
     !real :: sigma, epsilon
-    real(KIND=wp) :: tau
+    real(KIND=wp) :: tau, tau_cli=0.0_wp
     !real :: tmp
     ! interatomic distances
     !real(KIND=wp) :: d_AB, d_AC, d_BC
     ! Delta for interatomic distances
     !real(KIND=wp), DIMENSION(3) :: dd_AB, dd_AC, dd_BC
-    real(KIND=wp) :: delta = 0.1, cli_delta = 0
+    real(KIND=wp) :: delta = 0.1, delta_cli = 0
     ! For computing jPCA with delta
     !real(KIND=wp), DIMENSION(3) :: dd_ser, dd_er, dd_der
     !integer :: num_rows
@@ -51,8 +50,6 @@ program main
     real(KIND=wp) :: ax, ay, az, vx, vy, vz
     ! for storing intermediate values & looping
     integer :: i, k
-    !integer, parameter:: wp = SELECTED_REAL_KIND (p = 13, r = 300)
-    integer :: steps = 0
     !real (KIND = wp), DIMENSION(7) :: p_a, p_b ! our two particles
 
 ! Process command-line args
@@ -64,33 +61,39 @@ program main
         CALL get_command_argument(i, arg)
         ! Delta - defaults to 0.01 (see above)
         IF (arg == "-d") THEN
+            ! delta
             i = i + 1
             CALL get_command_argument(i, arg)
             write(stderr,*) "arg -d:", arg
-            read (arg, '(f33.32)') cli_delta
-            IF (cli_delta == 0) THEN
+            read (arg, '(f33.32)') delta_cli
+            IF (delta_cli == 0.0) THEN
                 print *, "Delta too small!"
-                print *, "main +67"
-                STOP 68
+                print '(A,I0)', "main +", __LINE__
+                STOP __LINE__ - 1
             END IF
-            ! Num steps - defaults to 0 (see above): Should be in data file
         ELSE IF (arg == "-s") THEN
+            ! Num steps - defaults to 0 (see above): Should be in data file
             i = i + 1
             CALL get_command_argument(i, arg)
-            ! print *, "arg -s:", arg
-            read (arg, '(I5)') steps
-            ! file_name -  defaults to atoms.dat (see above)
+            read (arg, '(I5)') nk_cli
+        ELSE IF (arg == "-t") THEN
+            ! tau
+            i = i + 1
+            CALL get_command_argument(i, arg)
+            read (arg, '(f1.2)') tau_cli
         ELSE IF (arg == "-f") THEN
+            ! filename
             i = i + 1
             CALL get_command_argument(i, arg)
             file_name = trim(arg)
             INQUIRE (FILE=file_name, EXIST=OK)
             if (.NOT. OK) THEN
                 print *, "ERROR!!  File does not exist: ", file_name
-                print *, "main +108"
-                STOP 108
+                print '(A,I0)', "main +", __LINE__
+                STOP __LINE__ - 1
             END IF
         ELSE IF (arg == "-x") THEN
+            ! Print xyz format
             XYZ = .TRUE.
         ELSE
             print *, "Arg used: ", arg
@@ -98,10 +101,11 @@ program main
             print *, "DEFAULTS:"
             print '(A, A)', "    data_file - ", file_name
             print '(A, F0.9)', "        delta - ", delta
-            print '(A, I0)', "        steps - ", steps
+            print '(A, F0.9)', "        tau - ", tau
+            print '(A, I0)', "        steps - ", nk
             print '(L1)', "     xyz file - ", XYZ
-            print *, "main +97"
-            STOP 97
+            print '(A,I0)', "main +", __LINE__
+            STOP __LINE__ - 1
         END IF
     END DO
 
@@ -114,17 +118,22 @@ program main
     write(stderr,*) "Number of atoms:", num_atoms
 
     ! Let the command-line `steps` override nk, if it's set
-    if (steps > 0) then
-        nk = steps
+    if (nk_cli > 0) then
+        nk = nk_cli
     end if
     ! same for delta
-    if (cli_delta > 0) then
-        delta = cli_delta
+    if (delta_cli > 0) then
+        delta = delta_cli
+    end if
+    ! nd tau
+    if (tau_cli > 0) then
+        tau = tau_cli
     end if
 
     write(stderr,*) "Will use delta: ", delta
     write(stderr,*) "Will use file: ", file_name
     write(stderr,*) "Will use num steps: ", nk
+    write(stderr,*) "Will use tau: ", tau
     write(stderr,*) "Will print XYZ file: ", XYZ
 
     ! Allocate arrays for position, velocity, force & mass
@@ -155,36 +164,62 @@ program main
     ! https://en.wikipedia.org/wiki/XYZ_file_format
     if (XYZ) then
         print *, num_atoms
-        print *, "Here is a comment!"
+        print *, "Initial Positions"
         print *, "atom1", x(1, :)
         print *, "atom2", x(2, :)
         print *, "atom3", x(3, :)
     end if
 ! Initial Force for particles
     call compute_force(x, delta, f)
-    write(stderr,*) "Initial Forces: "
+    write(stderr,*) "Initial Positions / Forces: "
     do i = 1, 3, 1
-        write(stderr,*) "  Atom:", i, ": ", f(i, :)
+        write(stderr,*) "  Atom:", i
+        write(stderr,*) "     x: ", x(i, :)
+        write(stderr,*) "     f: ", f(i, :)
     end do
 
   ! Iterate!
     write(stderr,*) "  nk:", nk
     do k = 1, nk, 1
         ! Calculate x^{(a)}_{k+1}
-        write(stderr,*) "  nk:", nk, ", k:", k
-        do atom_num = 1, num_atoms, 1
-            do dimn = 1, 1, 1 ! dimensions
-                ! Caclculate new position
-                x(atom_num, dimn) = x(atom_num, dimn) + tau * v(atom_num, dimn) &
-                                   + tau**2 * f(atom_num, dimn) / (2 * mass(atom_num, dimn))
-                ! calculate fnext
-                call compute_force(x, delta, f)
-        write(stderr,*) "  computed f:", f
-                ! Calculate new velocity
-                v(atom_num, dimn) = v(atom_num, dimn) + tau / (2 * mass(atom_num, dimn)) * &
-                                   (f(atom_num, dimn) + fnext(atom_num, dimn))
-                ! Assign f = fnext
-                f(atom_num, dimn) = fnext(atom_num, dimn)
+        ! Calculate new position
+
+        do atom_num = 1, 3, 1
+            ! print *, "POOP x before:", atom_num, x(atom_num, :) 
+        end do
+        do atom_num = 1, 3, 1
+            do dimn = 1, 3, 1
+
+                ! print *, "NUMS: ", atom_num, dimn
+                ! print *, "      x: ", x(atom_num, dimn)
+                ! print *, "      t: ", tau
+                ! print *, "      v: ", v(atom_num, dimn)
+                ! print *, "      f: ", f(atom_num, dimn)
+                ! print *, "      m: ", mass(atom_num, dimn)
+                ! print *, "     l2: ", tau * v(atom_num, dimn)
+                ! print *, "   l3-1: ", f(atom_num, dimn)
+                ! print *, "   l3-2: ", 2 * mass(atom_num, dimn)
+
+                x(atom_num, dimn) = x(atom_num, dimn) + &
+                                    tau * v(atom_num, dimn) + &
+                                    (f(atom_num, dimn) / (2 * mass(atom_num, dimn))) * tau**2
+            end do
+        end do
+        do atom_num = 1, 3, 1
+            ! print *, "POOP x after:", atom_num, x(atom_num, :) 
+        end do
+        ! calculate fnext
+        call compute_force(x, delta, fnext)
+        do atom_num = 1, 3, 1
+            print *, "POOP fn:", atom_num, fnext(atom_num, :) 
+        end do
+        ! Calculate new velocity
+        ! A
+        do atom_num = 1, 3, 1
+            do dimn = 1, 3, 1
+                v(atom_num, dimn) = v(atom_num, dimn) + &
+                                    tau / (2 * mass(atom_num, dimn)) * (f(atom_num, dimn) + &
+                                    fnext(atom_num, dimn))
             end do
         end do
 
@@ -195,6 +230,14 @@ program main
             print *, "atom2", x(2, :)
             print *, "atom3", x(3, :)
         end if
+
+        ! Assign f = fnext
+        do atom_num = 1, 3, 1
+          do dimn = 1, 3, 1
+            f(atom_num, dimn) = fnext(atom_num, dimn)
+            ! print *, atom_num, dimn, f(atom_num, dimn) 
+          end do
+        end do
 
     end do
 
