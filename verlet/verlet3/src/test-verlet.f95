@@ -30,6 +30,7 @@ program test
     nk = 6000                                     ! nk
     tau = 0.2                                     ! tau
     delta = 0.5                                          ! delta
+    !delta = 1                                          ! delta
     ! atom A
     mass(1) = 1.0080
     x(1, :) = (/-10.0, 0.0, 0.0/)          ! x, y, z
@@ -41,6 +42,7 @@ program test
     ! atom C
     mass(3) = 1.0080                               ! m, x, y, z, vx, vy, vz
     x(3, :) = (/10.74, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
+    !x(3, :) = (/11.0, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
     v(3, :) = (/0.0, 0.0, 0.0/)        ! m, x, y, z, vx, vy, vz
 
 !! TESTS
@@ -96,10 +98,16 @@ program test
     print *, ""
     print *, "======== Test get_delta_ser: Gets distances between 3 atoms as (AB, AC, BC) after adding small delta in each dimension"
     print *, "delta = ", delta
+        print *, "BEFORE get_delta_ser: Points"
+        print *, "        :", x
+        print *, "      1 :", x(1, :)
+        print *, "      2 :", x(2, :)
+        print *, "      3 :", x(3, :)
     print *, "                             x                             y                   z"
-    CALL get_delta_ser(x(1, :), x(2, :), x(3, :), delta, ser_delta)
+    CALL get_delta_ser( (/x(1, :), x(2, :), x(3, :)/), delta, ser_delta)
     do i = 1, 3, 1
-        print *, "Distance :", i, ":", ser_delta(i, :)
+        print *, "    Location :", i, ":", x(i, :)
+        print *, "    Distance :", i, ":", ser_delta(i, :)
     end do
 
 ! Test compute_force
