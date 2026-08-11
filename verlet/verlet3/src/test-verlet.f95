@@ -99,12 +99,11 @@ program test
     print *, "======== Test get_delta_ser: Gets distances between 3 atoms as (AB, AC, BC) after adding small delta in each dimension"
     print *, "delta = ", delta
         print *, "BEFORE get_delta_ser: Points"
-        print *, "        :", x
         print *, "      1 :", x(1, :)
         print *, "      2 :", x(2, :)
         print *, "      3 :", x(3, :)
     print *, "                             x                             y                   z"
-    CALL get_delta_ser( (/x(1, :), x(2, :), x(3, :)/), delta, ser_delta)
+    CALL get_delta_ser( x, delta, ser_delta)
     do i = 1, 3, 1
         print *, "    Location :", i, ":", x(i, :)
         print *, "    Distance :", i, ":", ser_delta(i, :)

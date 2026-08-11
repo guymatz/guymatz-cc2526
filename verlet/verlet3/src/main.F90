@@ -19,7 +19,8 @@ program main
     CHARACTER(len=32) :: file_name = "atoms.dat"
     !integer :: arg_len
     !integer :: status
-    real(KIND=wp), DIMENSION(:, :), ALLOCATABLE :: x, v, f, fnext, mass
+    real(KIND=wp), DIMENSION(:, :), ALLOCATABLE :: x, v, f, fnext
+    real(KIND=wp), DIMENSION(:), ALLOCATABLE :: mass
     ! ser, er & der are for parameters to jpca15 function
     ! INPUT
     !   ser: a vector with the three interatomic distances (AB, AC, and BC)
@@ -146,15 +147,15 @@ program main
     ! Force
     allocate (fnext(num_atoms, 3))
     ! mass
-    allocate (mass(num_atoms, 1))
+    allocate (mass(num_atoms))
 
     ! read in info for particles
     do i = 1, num_atoms, 1
-        read (unit=11, FMT=*) mass(i, 1), ax, ay, az, vx, vy, vz
+        read (unit=11, FMT=*) mass(i), ax, ay, az, vx, vy, vz
         x(i, :) = (/ax, ay, az/)
         v(i, :) = (/vx, vy, vz/)
         write(stderr,*) 'Particle', i, ': '
-        write(stderr,*) '  Mass:', mass(i, 1)
+        write(stderr,*) '  Mass:', mass(i)
         write(stderr,*) '  Starting Position:', x(i, :)
         write(stderr,*) '  Initial Velocity: ', v(i, :)
     end do
@@ -171,7 +172,7 @@ program main
     end if
 ! Initial Force for particles
     call compute_force(x, delta, f)
-    write(stderr,*) "Initial Positions / Forces: "
+    write(stderr,*) " ***** Initial Positions / Forces: "
     do i = 1, 3, 1
         write(stderr,*) "  Atom:", i
         write(stderr,*) "     x: ", x(i, :)
@@ -179,13 +180,13 @@ program main
     end do
 
   ! Iterate!
-    write(stderr,*) "  nk:", nk
+    ! write(stderr,*) "  nk:", nk
     do k = 1, nk, 1
         ! Calculate x^{(a)}_{k+1}
         ! Calculate new position
 
         do atom_num = 1, 3, 1
-            ! print *, "POOP x before:", atom_num, x(atom_num, :) 
+            print *, " ***** x before:", atom_num, x(atom_num, :) 
         end do
         do atom_num = 1, 3, 1
             do dimn = 1, 3, 1
@@ -195,18 +196,20 @@ program main
                 ! print *, "      t: ", tau
                 ! print *, "      v: ", v(atom_num, dimn)
                 ! print *, "      f: ", f(atom_num, dimn)
-                ! print *, "      m: ", mass(atom_num, dimn)
-                ! print *, "     l2: ", tau * v(atom_num, dimn)
+                ! print *, "      m: ", mass(atom_num)
+                ! print *, "     l1: ", tau * v(atom_num, dimn)
+                ! print *, "     l2: ", x(atom_num, dimn) + tau * v(atom_num, dimn)
                 ! print *, "   l3-1: ", f(atom_num, dimn)
-                ! print *, "   l3-2: ", 2 * mass(atom_num, dimn)
+                ! print *, "   l3-2: ", 2 * mass(atom_num)
+                ! print *, "     l3: ", f(atom_num, dimn) / (2 * mass(atom_num)) * tau**2
 
-                x(atom_num, dimn) = x(atom_num, dimn) + &
-                                    tau * v(atom_num, dimn) + &
-                                    (f(atom_num, dimn) / (2 * mass(atom_num, dimn))) * tau**2
+                x(atom_num, dimn) = x(atom_num, dimn) + tau * v(atom_num, dimn) + &
+                                    (f(atom_num, dimn) / (2 * mass(atom_num))) * tau**2
+                print *, "  new x: ", x(atom_num, dimn)
             end do
         end do
         do atom_num = 1, 3, 1
-            ! print *, "POOP x after:", atom_num, x(atom_num, :) 
+            print *, " ***** x AFTER:", atom_num, x(atom_num, :) 
         end do
         ! calculate fnext
         call compute_force(x, delta, fnext)
@@ -218,7 +221,7 @@ program main
         do atom_num = 1, 3, 1
             do dimn = 1, 3, 1
                 v(atom_num, dimn) = v(atom_num, dimn) + &
-                                    tau / (2 * mass(atom_num, dimn)) * (f(atom_num, dimn) + &
+                                    tau / (2 * mass(atom_num)) * (f(atom_num, dimn) + &
                                     fnext(atom_num, dimn))
             end do
         end do

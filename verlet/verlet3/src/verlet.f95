@@ -52,19 +52,6 @@ contains
         integer :: dimn
 
         print *, "In get_delta_ser: Points"
-        print *, "        :", pts
-        print *, "     1 x:", pts(1, 1)
-        print *, "     2 x:", pts(1, 2)
-        print *, "     3 x:", pts(1, 3)
-        print *, "     1 y:", pts(2, 1)
-        print *, "     2 y:", pts(2, 2)
-        print *, "     3 y:", pts(2, 3)
-        print *, "     1 z:", pts(3, 1)
-        print *, "     2 z:", pts(3, 2)
-        print *, "     3 z:", pts(3, 3)
-        print *, "      1 :", pts(1, :)
-        print *, "      2 :", pts(2, :)
-        print *, "      3 :", pts(3, :)
         do dimn = 1, 3, 1
             print *, "Atom:", dimn, ": ", pts(dimn, :)
         end do
@@ -139,13 +126,13 @@ contains
             write(stderr,*) "    ", atom_i, points(atom_i, :)
         end do
         call get_ser(points(1, :), points(2, :), points(3, :), d_)
-        write(stderr,*) "    DIST: ", d_
+        ! write(stderr,*) "    DIST: ", d_
         ! Step 2 of calculating forces: - pass distances to jpca15 as `ser`
         ser = (/d_(1), d_(2), d_(3)/)
-        write(stderr,*) "    SER: ", ser
-        write(stderr,*) "    distances: ", d_
+        ! write(stderr,*) "    SER: ", ser
+        ! write(stderr,*) "    distances: ", d_
         call jpca15(ser, er, der)
-        write(stderr,*) "    er:", er
+        ! write(stderr,*) "    er:", er
 
         ! ! Step 3 of calculating forces: - get euclidean distances between points + delta
         ! do dimn = 1, 3, 1
