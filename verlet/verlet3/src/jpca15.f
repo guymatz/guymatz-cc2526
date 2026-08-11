@@ -27,7 +27,7 @@
 ! ************************************************************************
       subroutine diat12(r,ener,der)
 ! ************************************************************************
-! *     This subroutine computes the energies of a diatomic potential 
+! *     This subroutine computes the energies of a diatomic potential
 ! *     fitted to    10 points
 ! *     rms =      0.12856952 kcal/mol
 ! *     emax =      0.32188730 kcal/mol
@@ -60,16 +60,16 @@
       return
       end
 ! *************************************************************
-      subroutine triaaa(r12,r13,r23,ener,der)       
+      subroutine triaaa(r12,r13,r23,ener,der)
 ! *************************************************************
-! *     This subroutine computes the energies of a 3D PES     
-! *     for the AAA system class fitted to  276 points      
-! *     rms =      1.75035364 kcal/mol                              
-! *     emax =     12.92836324 kcal/mol                             
+! *     This subroutine computes the energies of a 3D PES
+! *     for the AAA system class fitted to  276 points
+! *     rms =      1.75035364 kcal/mol
+! *     emax =     12.92836324 kcal/mol
 ! *************************************************************
-      implicit real*8(a-h,o-z)                               
-      dimension i1(   43),i2(   43),i3(   43),i4(   43),cf(   43)  
-      dimension f12(0: 8),f13(0: 8),f23(0: 8)    
+      implicit real*8(a-h,o-z)
+      dimension i1(   43),i2(   43),i3(   43),i4(   43),cf(   43)
+      dimension f12(0: 8),f13(0: 8),f23(0: 8)
       dimension der(3)
       data cf(  1)/0.1870875561429140D+02/
       data i1(  1)/ 0/,i2(  1)/ 1/,i3(  1)/ 1/,i4(  1)/ 3/
@@ -174,65 +174,65 @@
       der13 = 0.d0
       der23 = 0.d0
       do 2 l=1, 43
-         if (i4(l).eq.1) then                             
-            aux=f12(i1(l))*f13(i2(l))*f23(i3(l))          
+         if (i4(l).eq.1) then
+            aur=f12(i1(l))*f13(i2(l))*f23(i3(l))
             dux12=i1(l)*f12(i1(l)-1)*f13(i2(l))*f23(i3(l))
             dux13=i2(l)*f12(i1(l))*f13(i2(l)-1)*f23(i3(l))
             dux23=i3(l)*f12(i1(l))*f13(i2(l))*f23(i3(l)-1)
-         elseif (i4(l).eq.3) then                         
-            aux1=f12(i1(l))*f13(i2(l))*f23(i3(l))         
-            aux2=f12(i3(l))*f13(i1(l))*f23(i2(l))         
-            aux3=f12(i2(l))*f13(i3(l))*f23(i1(l))         
-            aux=aux1+aux2+aux3                            
-            dux1=i1(l)*f12(i1(l)-1)*f13(i2(l))*f23(i3(l)) 
-            dux2=i3(l)*f12(i3(l)-1)*f13(i1(l))*f23(i2(l)) 
-            dux3=i2(l)*f12(i2(l)-1)*f13(i3(l))*f23(i1(l)) 
-            dux12=dux1+dux2+dux3                          
-            dux1=i2(l)*f12(i1(l))*f13(i2(l)-1)*f23(i3(l)) 
-            dux2=i1(l)*f12(i3(l))*f13(i1(l)-1)*f23(i2(l)) 
-            dux3=i3(l)*f12(i2(l))*f13(i3(l)-1)*f23(i1(l)) 
-            dux13=dux1+dux2+dux3                          
-            dux1=i3(l)*f12(i1(l))*f13(i2(l))*f23(i3(l)-1) 
-            dux2=i2(l)*f12(i3(l))*f13(i1(l))*f23(i2(l)-1) 
-            dux3=i1(l)*f12(i2(l))*f13(i3(l))*f23(i1(l)-1) 
-            dux23=dux1+dux2+dux3                          
-         elseif (i4(l).eq.6) then                         
-            aux1=f12(i1(l))*f13(i2(l))*f23(i3(l))         
-            aux2=f12(i1(l))*f13(i3(l))*f23(i2(l))         
-            aux3=f12(i2(l))*f13(i1(l))*f23(i3(l))         
-            aux4=f12(i2(l))*f13(i3(l))*f23(i1(l))         
-            aux5=f12(i3(l))*f13(i1(l))*f23(i2(l))         
-            aux6=f12(i3(l))*f13(i2(l))*f23(i1(l))         
-            aux=aux1+aux2+aux3+aux4+aux5+aux6             
-            dux1=i1(l)*f12(i1(l)-1)*f13(i2(l))*f23(i3(l)) 
-            dux2=i1(l)*f12(i1(l)-1)*f13(i3(l))*f23(i2(l)) 
-            dux3=i2(l)*f12(i2(l)-1)*f13(i1(l))*f23(i3(l)) 
-            dux4=i2(l)*f12(i2(l)-1)*f13(i3(l))*f23(i1(l)) 
-            dux5=i3(l)*f12(i3(l)-1)*f13(i1(l))*f23(i2(l)) 
-            dux6=i3(l)*f12(i3(l)-1)*f13(i2(l))*f23(i1(l)) 
-            dux12=dux1+dux2+dux3+dux4+dux5+dux6           
-            dux1=i2(l)*f12(i1(l))*f13(i2(l)-1)*f23(i3(l)) 
-            dux2=i3(l)*f12(i1(l))*f13(i3(l)-1)*f23(i2(l)) 
-            dux3=i1(l)*f12(i2(l))*f13(i1(l)-1)*f23(i3(l)) 
-            dux4=i3(l)*f12(i2(l))*f13(i3(l)-1)*f23(i1(l)) 
-            dux5=i1(l)*f12(i3(l))*f13(i1(l)-1)*f23(i2(l)) 
-            dux6=i2(l)*f12(i3(l))*f13(i2(l)-1)*f23(i1(l)) 
-            dux13=dux1+dux2+dux3+dux4+dux5+dux6           
-            dux1=i3(l)*f12(i1(l))*f13(i2(l))*f23(i3(l)-1) 
-            dux2=i2(l)*f12(i1(l))*f13(i3(l))*f23(i2(l)-1) 
-            dux3=i3(l)*f12(i2(l))*f13(i1(l))*f23(i3(l)-1) 
-            dux4=i1(l)*f12(i2(l))*f13(i3(l))*f23(i1(l)-1) 
-            dux5=i2(l)*f12(i3(l))*f13(i1(l))*f23(i2(l)-1) 
-            dux6=i1(l)*f12(i3(l))*f13(i2(l))*f23(i1(l)-1) 
-            dux23=dux1+dux2+dux3+dux4+dux5+dux6           
-         endif                                            
-         ener=ener+cf(l)*aux                              
-         der12=der12+cf(l)*dux12                          
-         der13=der13+cf(l)*dux13                          
-         der23=der23+cf(l)*dux23                          
-    2 continue                                          
-       der(1)=der12*(1.d0-vex1*r12)*dexp(-vex1*r12)       
-       der(2)=der13*(1.d0-vex1*r13)*dexp(-vex1*r13)       
-       der(3)=der23*(1.d0-vex1*r23)*dexp(-vex1*r23)       
+         elseif (i4(l).eq.3) then
+            aux1=f12(i1(l))*f13(i2(l))*f23(i3(l))
+            aux2=f12(i3(l))*f13(i1(l))*f23(i2(l))
+            aux3=f12(i2(l))*f13(i3(l))*f23(i1(l))
+            aux=aux1+aux2+aux3
+            dux1=i1(l)*f12(i1(l)-1)*f13(i2(l))*f23(i3(l))
+            dux2=i3(l)*f12(i3(l)-1)*f13(i1(l))*f23(i2(l))
+            dux3=i2(l)*f12(i2(l)-1)*f13(i3(l))*f23(i1(l))
+            dux12=dux1+dux2+dux3
+            dux1=i2(l)*f12(i1(l))*f13(i2(l)-1)*f23(i3(l))
+            dux2=i1(l)*f12(i3(l))*f13(i1(l)-1)*f23(i2(l))
+            dux3=i3(l)*f12(i2(l))*f13(i3(l)-1)*f23(i1(l))
+            dux13=dux1+dux2+dux3
+            dux1=i3(l)*f12(i1(l))*f13(i2(l))*f23(i3(l)-1)
+            dux2=i2(l)*f12(i3(l))*f13(i1(l))*f23(i2(l)-1)
+            dux3=i1(l)*f12(i2(l))*f13(i3(l))*f23(i1(l)-1)
+            dux23=dux1+dux2+dux3
+         elseif (i4(l).eq.6) then
+            aux1=f12(i1(l))*f13(i2(l))*f23(i3(l))
+            aux2=f12(i1(l))*f13(i3(l))*f23(i2(l))
+            aux3=f12(i2(l))*f13(i1(l))*f23(i3(l))
+            aux4=f12(i2(l))*f13(i3(l))*f23(i1(l))
+            aux5=f12(i3(l))*f13(i1(l))*f23(i2(l))
+            aux6=f12(i3(l))*f13(i2(l))*f23(i1(l))
+            aux=aux1+aux2+aux3+aux4+aux5+aux6
+            dux1=i1(l)*f12(i1(l)-1)*f13(i2(l))*f23(i3(l))
+            dux2=i1(l)*f12(i1(l)-1)*f13(i3(l))*f23(i2(l))
+            dux3=i2(l)*f12(i2(l)-1)*f13(i1(l))*f23(i3(l))
+            dux4=i2(l)*f12(i2(l)-1)*f13(i3(l))*f23(i1(l))
+            dux5=i3(l)*f12(i3(l)-1)*f13(i1(l))*f23(i2(l))
+            dux6=i3(l)*f12(i3(l)-1)*f13(i2(l))*f23(i1(l))
+            dux12=dux1+dux2+dux3+dux4+dux5+dux6
+            dux1=i2(l)*f12(i1(l))*f13(i2(l)-1)*f23(i3(l))
+            dux2=i3(l)*f12(i1(l))*f13(i3(l)-1)*f23(i2(l))
+            dux3=i1(l)*f12(i2(l))*f13(i1(l)-1)*f23(i3(l))
+            dux4=i3(l)*f12(i2(l))*f13(i3(l)-1)*f23(i1(l))
+            dux5=i1(l)*f12(i3(l))*f13(i1(l)-1)*f23(i2(l))
+            dux6=i2(l)*f12(i3(l))*f13(i2(l)-1)*f23(i1(l))
+            dux13=dux1+dux2+dux3+dux4+dux5+dux6
+            dux1=i3(l)*f12(i1(l))*f13(i2(l))*f23(i3(l)-1)
+            dux2=i2(l)*f12(i1(l))*f13(i3(l))*f23(i2(l)-1)
+            dux3=i3(l)*f12(i2(l))*f13(i1(l))*f23(i3(l)-1)
+            dux4=i1(l)*f12(i2(l))*f13(i3(l))*f23(i1(l)-1)
+            dux5=i2(l)*f12(i3(l))*f13(i1(l))*f23(i2(l)-1)
+            dux6=i1(l)*f12(i3(l))*f13(i2(l))*f23(i1(l)-1)
+            dux23=dux1+dux2+dux3+dux4+dux5+dux6
+         endif
+         ener=ener+cf(l)*aux
+         der12=der12+cf(l)*dux12
+         der13=der13+cf(l)*dux13
+         der23=der23+cf(l)*dux23
+    2 continue
+       der(1)=der12*(1.d0-vex1*r12)*dexp(-vex1*r12)
+       der(2)=der13*(1.d0-vex1*r13)*dexp(-vex1*r13)
+       der(3)=der23*(1.d0-vex1*r23)*dexp(-vex1*r23)
       return
       end
