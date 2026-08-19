@@ -67,9 +67,9 @@ program main
             CALL get_command_argument(i, arg)
             write(stderr,*) "arg -d: ", arg
             read (arg, '(f33.32)') delta_cli
-            IF (delta_cli == 0.0) THEN
+            IF (delta_cli <= 0.0) THEN
                 write(stderr,*) "Delta too small!"
-                write(stderr,*) '(A,I0)', "main +", __LINE__
+                write(stderr,'(A,I0)') "main +", __LINE__
                 STOP __LINE__ - 1
             END IF
         ELSE IF (arg == "-s") THEN
