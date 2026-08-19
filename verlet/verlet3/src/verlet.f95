@@ -16,7 +16,7 @@ contains
         ! Distance to return
         !real(KIND=wp) :: dist
         dist = SQRT( (p1(1) - p2(1))**2 + (p1(2) - p2(2))**2 + (p1(3) - p2(3))**2)
-        !print *, "poop"
+        !write(stderr,*) "poop"
     end function eudist
 
     subroutine get_ser(p1, p2, p3, ser)
@@ -51,17 +51,17 @@ contains
         ! for looping
         integer :: dimn
 
-        print *, "In get_delta_ser: Points"
+        write(stderr,*) "In get_delta_ser: Points"
         do dimn = 1, 3, 1
-            print *, "Atom:", dimn, ": ", pts(dimn, :)
+            write(stderr,*) "Atom:", dimn, ": ", pts(dimn, :)
         end do
         do dimn = 1, 3, 1
             ser(1, dimn) = eudist_with_delta(pts(1, :), pts(2, :), delta, dimn)
-            ! print *, "ser 1:", dimn, ": ", ser(1, dimn)
+            ! write(stderr,*) "ser 1:", dimn, ": ", ser(1, dimn)
             ser(2, dimn) = eudist_with_delta(pts(1, :), pts(3, :), delta, dimn)
-            ! print *, "ser 2:", dimn, ": ", ser(2, dimn)
+            ! write(stderr,*) "ser 2:", dimn, ": ", ser(2, dimn)
             ser(3, dimn) = eudist_with_delta(pts(2, :), pts(3, :), delta, dimn)
-            ! print *, "ser 3:", dimn, ": ", ser(3, dimn)
+            ! write(stderr,*) "ser 3:", dimn, ": ", ser(3, dimn)
         end do
     end subroutine get_delta_ser
 
@@ -83,12 +83,12 @@ contains
         !!!!!   NOT Adding delta to second atom.  Only the first
         dist = eudist(p1_delta, p2)
 
-        ! print *, "   -------------"
-        ! print *, "   ******** p1+:", p1_delta
-        ! print *, "   ******** p2:", p2
-        ! print *, "   ******** dist:", dist
-        ! print *, "   -------------"
-        ! print *, "eudist_with_delta: Dim:", "p1:", p1(dimn), "p1_d:", p1_delta(dimn)
+        ! write(stderr,*) "   -------------"
+        ! write(stderr,*) "   ******** p1+:", p1_delta
+        ! write(stderr,*) "   ******** p2:", p2
+        ! write(stderr,*) "   ******** dist:", dist
+        ! write(stderr,*) "   -------------"
+        ! write(stderr,*) "eudist_with_delta: Dim:", "p1:", p1(dimn), "p1_d:", p1_delta(dimn)
 
     end function eudist_with_delta
 
@@ -137,11 +137,11 @@ contains
         ! ! Step 3 of calculating forces: - get euclidean distances between points + delta
         ! do dimn = 1, 3, 1
         !     delta_d_(1, dimn) = eudist_with_delta(points(1, :), points(2, :), delta, dimn)
-        !     print *, "Distance between A & B in", dimn,":", delta_d_(1, dimn) 
+        !     write(stderr,*) "Distance between A & B in", dimn,":", delta_d_(1, dimn)
         !     delta_d_(2, dimn) = eudist_with_delta(points(1, :), points(3, :), delta, dimn)
-        !     print *, "Distance between A & C in", dimn,":", delta_d_(2, dimn) 
+        !     write(stderr,*) "Distance between A & C in", dimn,":", delta_d_(2, dimn)
         !     delta_d_(3, dimn) = eudist_with_delta(points(2, :), points(3, :), delta, dimn)
-        !     print *, "Distance between B & C in", dimn,":", delta_d_(3, dimn) 
+        !     write(stderr,*) "Distance between B & C in", dimn,":", delta_d_(3, dimn)
         ! end do
 
         ! Atom A-B xyz
@@ -170,11 +170,11 @@ contains
         delta_d_(6, 3) = eudist_with_delta(points(3, :), points(2, :), delta, 3)
 
         do atom_i = 1, 6, 1
-           !print *, "Delta D: ", atom_i, delta_d_(atom_i, :)
+           write(stderr,*) "Delta D: ", atom_i, delta_d_(atom_i, :)
         end do
 
         do atom_i = 1, 3, 1
-           !print *, "      D: ", atom_i, d_(atom_i)
+           write(stderr,*) "      D: ", atom_i, d_(atom_i)
         end do
 
         ! Step 3.5: I don't think I need to do this, but let's initialize the forces to 0
@@ -186,98 +186,107 @@ contains
 
         ! Step 4: Update the nx3 `forces` array with the force on each atom in each dimension
     ! Atom 1 jiggled
-       !print *, "Jiggle atom in dimn", "                   Dist A-B                   Dist A-C              Dist B-C"
+       !write(stderr,*) "Jiggle atom in dimn", "                   Dist A-B                   Dist A-C              Dist B-C"
       ! x
         delta_ser = (/delta_d_(1, 1), delta_d_(2, 1), d_(3)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(1, 1) = (delta_er - er) / delta
-       !print *, "A, x                          ", delta_ser
-       !print *, "  delta_ser:", delta_ser
-       !print *, "  delta_er:", delta_er
-       !print *, "  er:", er
-       !print *, "  forces(1, 1):", forces(1, 1)
+
+       write(stderr,*) "A, x                          ", delta_ser
+       write(stderr,*) "  delta_ser:", delta_ser
+       write(stderr,*) "  delta_er:", delta_er
+       write(stderr,*) "  er:", er
+       write(stderr,*) "  forces(1, 1):", forces(1, 1)
 
       ! y
         delta_ser = (/delta_d_(1, 2), delta_d_(2, 2), d_(3)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(1, 2) = (delta_er - er) / delta
-       !print *, "A, y                          ", delta_ser
-       !print *, "  delta_ser:", delta_ser
-       !print *, "  delta_er:", delta_er
-       !print *, "  er:", er
-       !print *, "  forces(1, 2):", forces(1, 2)
+
+       write(stderr,*) "A, y                          ", delta_ser
+       write(stderr,*) "  delta_ser:", delta_ser
+       write(stderr,*) "  delta_er:", delta_er
+       write(stderr,*) "  er:", er
+       write(stderr,*) "  forces(1, 2):", forces(1, 2)
 
       ! z
         delta_ser = (/delta_d_(1, 3), delta_d_(2, 3), d_(3)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(1, 3) = (delta_er - er) / delta
-       !print *, "A, z                          ", delta_ser
-       !print *, "  delta_ser:", delta_ser
-       !print *, "  delta_er:", delta_er
-       !print *, "  er:", er
-       !print *, "  forces(1, 3):", forces(1, 3)
+
+       write(stderr,*) "A, z                          ", delta_ser
+       write(stderr,*) "  delta_ser:", delta_ser
+       write(stderr,*) "  delta_er:", delta_er
+       write(stderr,*) "  er:", er
+       write(stderr,*) "  forces(1, 3):", forces(1, 3)
 
     ! Atom 2 jiggled
         delta_ser = (/delta_d_(3, 1), d_(2), delta_d_(4, 1)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(2, 1) = (delta_er - er) / delta
-       !print *, "B, x                          ", delta_ser
-       !print *, "  delta_ser:", delta_ser
-       !print *, "  delta_er:", delta_er
-       !print *, "  er:", er
-       !print *, "  forces(2, 1):", forces(2, 1)
+
+       write(stderr,*) "B, x                          ", delta_ser
+       write(stderr,*) "  delta_ser:", delta_ser
+       write(stderr,*) "  delta_er:", delta_er
+       write(stderr,*) "  er:", er
+       write(stderr,*) "  forces(2, 1):", forces(2, 1)
 
         delta_ser = (/delta_d_(3, 2), d_(2), delta_d_(4, 2)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(2, 2) = (delta_er - er) / delta
-       !print *, "B, y                          ", delta_ser
-       !print *, "  delta_ser:", delta_ser
-       !print *, "  delta_er:", delta_er
-       !print *, "  er:", er
-       !print *, "  forces(2, 2):", forces(2, 2)
+
+       write(stderr,*) "B, y                          ", delta_ser
+       write(stderr,*) "  delta_ser:", delta_ser
+       write(stderr,*) "  delta_er:", delta_er
+       write(stderr,*) "  er:", er
+       write(stderr,*) "  forces(2, 2):", forces(2, 2)
 
         delta_ser = (/delta_d_(3, 3), d_(2), delta_d_(4, 3)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(2, 3) = (delta_er - er) / delta
-       !print *, "B, z                          ", delta_ser
-       !print *, "  delta_ser:", delta_ser
-       !print *, "  delta_er:", delta_er
-       !print *, "  er:", er
-       !print *, "  forces(2, 3):", forces(2, 3)
+
+       write(stderr,*) "B, z                          ", delta_ser
+       write(stderr,*) "  delta_ser:", delta_ser
+       write(stderr,*) "  delta_er:", delta_er
+       write(stderr,*) "  er:", er
+       write(stderr,*) "  forces(2, 3):", forces(2, 3)
 
     ! Atom 3 jiggled
       ! x
         delta_ser = (/d_(1), delta_d_(5, 1), delta_d_(6, 1)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(3, 1) = (delta_er - er) / delta
-       !print *, "C, x                          ", delta_ser
-       !print *, "  delta_ser:", delta_ser
-       !print *, "  delta_er:", delta_er
-       !print *, "  er:", er
-       !print *, "  forces(3, 1):", forces(3, 1)
+
+       write(stderr,*) "C, x                          ", delta_ser
+       write(stderr,*) "  delta_ser:", delta_ser
+       write(stderr,*) "  delta_er:", delta_er
+       write(stderr,*) "  er:", er
+       write(stderr,*) "  forces(3, 1):", forces(3, 1)
 
       ! y
         delta_ser = (/d_(1), delta_d_(5, 2), delta_d_(6, 2)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(3, 2) = (delta_er - er) / delta
-       !print *, "C, y                          ", delta_ser
-       !print *, "  delta_ser:", delta_ser
-       !print *, "  delta_er:", delta_er
-       !print *, "  er:", er
-       !print *, "  forces(3, 2):", forces(3, 2)
+
+       write(stderr,*) "C, y                          ", delta_ser
+       write(stderr,*) "  delta_ser:", delta_ser
+       write(stderr,*) "  delta_er:", delta_er
+       write(stderr,*) "  er:", er
+       write(stderr,*) "  forces(3, 2):", forces(3, 2)
 
       ! z
         delta_ser = (/d_(1), delta_d_(5, 3), delta_d_(6, 3)/)
         call jpca15(delta_ser, delta_er, delta_der)
         forces(3, 3) = (delta_er - er) / delta
-       !print *, "C, z                          ", delta_ser
-       !print *, "  delta_ser:", delta_ser
-       !print *, "  delta_er:", delta_er
-       !print *, "  er:", er
-       !print *, "  forces(3, 3):", forces(3, 3)
+
+       write(stderr,*) "C, z                          ", delta_ser
+       write(stderr,*) "  delta_ser:", delta_ser
+       write(stderr,*) "  delta_er:", delta_er
+       write(stderr,*) "  er:", er
+       write(stderr,*) "  forces(3, 3):", forces(3, 3)
 
         ! do atom_i = 1, 3, 1
-       !  !print *, "Atom:", atom_i, forces(atom_i, :)
+       !  !write(stderr,*) "Atom:", atom_i, forces(atom_i, :)
         ! end do
 
         ! DONE!

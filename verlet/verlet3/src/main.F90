@@ -60,16 +60,16 @@ program main
         IF (i .gt. command_argument_count()) exit
 
         CALL get_command_argument(i, arg)
-        ! Delta - defaults to 0.01 (see above)
+        ! Delta - defaults to 0.1 (see above)
         IF (arg == "-d") THEN
             ! delta
             i = i + 1
             CALL get_command_argument(i, arg)
-            write(stderr,*) "arg -d:", arg
+            write(stderr,*) "arg -d: ", arg
             read (arg, '(f33.32)') delta_cli
             IF (delta_cli == 0.0) THEN
-                print *, "Delta too small!"
-                print '(A,I0)', "main +", __LINE__
+                write(stderr,*) "Delta too small!"
+                write(stderr,*) '(A,I0)', "main +", __LINE__
                 STOP __LINE__ - 1
             END IF
         ELSE IF (arg == "-s") THEN
@@ -89,23 +89,23 @@ program main
             file_name = trim(arg)
             INQUIRE (FILE=file_name, EXIST=OK)
             if (.NOT. OK) THEN
-                print *, "ERROR!!  File does not exist: ", file_name
-                print '(A,I0)', "main +", __LINE__
+                write(stderr,*) "ERROR!!  File does not exist: ", file_name
+                write(stderr,*) '(A,I0)', "main +", __LINE__
                 STOP __LINE__ - 1
             END IF
         ELSE IF (arg == "-x") THEN
-            ! Print xyz format
+            ! write(stderr,*) xyz format
             XYZ = .TRUE.
         ELSE
-            print *, "Arg used: ", arg
-            print *, "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ] [-x]"
-            print *, "DEFAULTS:"
-            print '(A, A)', "    data_file - ", file_name
-            print '(A, F0.9)', "        delta - ", delta
-            print '(A, F0.9)', "        tau - ", tau
-            print '(A, I0)', "        steps - ", nk
-            print '(L1)', "     xyz file - ", XYZ
-            print '(A,I0)', "main +", __LINE__
+            write(stderr,*) "Arg used: ", arg
+            write(stderr,*) "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ] [-x]"
+            write(stderr,*) "DEFAULTS:"
+            write(stderr,*) '(A, A)', "    data_file - ", file_name
+            write(stderr,*) '(A, F0.9)', "        delta - ", delta
+            write(stderr,*) '(A, F0.9)', "        tau - ", tau
+            write(stderr,*) '(A, I0)', "        steps - ", nk
+            write(stderr,*) '(L1)', " Create xyz file - ", XYZ
+            write(stderr,*) '(A,I0)', "main +", __LINE__
             STOP __LINE__ - 1
         END IF
     END DO
@@ -115,7 +115,7 @@ program main
     read (unit=11, FMT=*) nk, tau
     read (unit=11, FMT=*) delta
     read (unit=11, FMT=*) num_atoms
-    !print *, nk, tau, sigma, epsilon, num_atoms
+    !write(stderr,*) nk, tau, sigma, epsilon, num_atoms
     write(stderr,*) "Number of atoms:", num_atoms
 
     ! Let the command-line `steps` override nk, if it's set
@@ -135,7 +135,7 @@ program main
     write(stderr,*) "Will use file: ", file_name
     write(stderr,*) "Will use num steps: ", nk
     write(stderr,*) "Will use tau: ", tau
-    write(stderr,*) "Will print XYZ file: ", XYZ
+    write(stderr,*) "Will write(stderr,*) XYZ file: ", XYZ
 
     ! Allocate arrays for position, velocity, force & mass
     ! Position
@@ -161,7 +161,7 @@ program main
     end do
     close (unit=11)
 
-! print initial output for XYZ data file -
+! write(stderr,*) initial output for XYZ data file -
     ! https://en.wikipedia.org/wiki/XYZ_file_format
     if (XYZ) then
         print *, num_atoms
@@ -175,6 +175,7 @@ program main
     write(stderr,*) " ***** Initial Positions / Forces: "
     do i = 1, 3, 1
         write(stderr,*) "  Atom:", i
+        write(stderr,*) "                  X                      Y                        Z"
         write(stderr,*) "     x: ", x(i, :)
         write(stderr,*) "     f: ", f(i, :)
     end do
@@ -186,35 +187,35 @@ program main
         ! Calculate new position
 
         do atom_num = 1, 3, 1
-            print *, " ***** x before:", atom_num, x(atom_num, :) 
+            write(stderr,*) " ***** x before:", atom_num, x(atom_num, :) 
         end do
         do atom_num = 1, 3, 1
             do dimn = 1, 3, 1
 
-                ! print *, "NUMS: ", atom_num, dimn
-                ! print *, "      x: ", x(atom_num, dimn)
-                ! print *, "      t: ", tau
-                ! print *, "      v: ", v(atom_num, dimn)
-                ! print *, "      f: ", f(atom_num, dimn)
-                ! print *, "      m: ", mass(atom_num)
-                ! print *, "     l1: ", tau * v(atom_num, dimn)
-                ! print *, "     l2: ", x(atom_num, dimn) + tau * v(atom_num, dimn)
-                ! print *, "   l3-1: ", f(atom_num, dimn)
-                ! print *, "   l3-2: ", 2 * mass(atom_num)
-                ! print *, "     l3: ", f(atom_num, dimn) / (2 * mass(atom_num)) * tau**2
+                ! write(stderr,*) "NUMS: ", atom_num, dimn
+                ! write(stderr,*) "      x: ", x(atom_num, dimn)
+                ! write(stderr,*) "      t: ", tau
+                ! write(stderr,*) "      v: ", v(atom_num, dimn)
+                ! write(stderr,*) "      f: ", f(atom_num, dimn)
+                ! write(stderr,*) "      m: ", mass(atom_num)
+                ! write(stderr,*) "     l1: ", tau * v(atom_num, dimn)
+                ! write(stderr,*) "     l2: ", x(atom_num, dimn) + tau * v(atom_num, dimn)
+                ! write(stderr,*) "   l3-1: ", f(atom_num, dimn)
+                ! write(stderr,*) "   l3-2: ", 2 * mass(atom_num)
+                ! write(stderr,*) "     l3: ", f(atom_num, dimn) / (2 * mass(atom_num)) * tau**2
 
                 x(atom_num, dimn) = x(atom_num, dimn) + tau * v(atom_num, dimn) + &
                                     (f(atom_num, dimn) / (2 * mass(atom_num))) * tau**2
-                print *, "  new x: ", x(atom_num, dimn)
+                write(stderr,*) "  new x: ", atom_num, dimn, x(atom_num, dimn)
             end do
         end do
         do atom_num = 1, 3, 1
-            print *, " ***** x AFTER:", atom_num, x(atom_num, :) 
+            write(stderr,*) " ***** x AFTER:", atom_num, x(atom_num, :) 
         end do
         ! calculate fnext
         call compute_force(x, delta, fnext)
         do atom_num = 1, 3, 1
-            print *, "POOP fn:", atom_num, fnext(atom_num, :) 
+            write(stderr,*) "POOP fn:", atom_num, fnext(atom_num, :) 
         end do
         ! Calculate new velocity
         ! A
@@ -238,7 +239,7 @@ program main
         do atom_num = 1, 3, 1
           do dimn = 1, 3, 1
             f(atom_num, dimn) = fnext(atom_num, dimn)
-            ! print *, atom_num, dimn, f(atom_num, dimn) 
+            ! write(stderr,*) atom_num, dimn, f(atom_num, dimn) 
           end do
         end do
 
