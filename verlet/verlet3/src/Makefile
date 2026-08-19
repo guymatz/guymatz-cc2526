@@ -5,16 +5,21 @@ FC=gfortran
 #FFLAGS = -g -fbacktrace -fcheck=all -Wall
 FFLAGS = -g -fbacktrace -Wall
 
+PFUNIT_DIR = /usr/local/pfunit
+
+include $(PFUNIT_DIR)/PFUNIT/include/PFUNIT.mk
+FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
+
 # all: TARGET1 TARGET2
 
-TARGET1 = ../bin/verlet3
-TARGET2 = ../bin/test-verlet
-OBJECTS1= main.o \
+BIN_TARGET = ../bin/verlet3
+TEST_TARGET = ../bin/test-verlet
+BIN_OBJECTS= main.o \
          verlet.o \
          jpca15.o \
          kinds.o
 
-OBJECTS2= test-verlet.o \
+TEST_OBJECTS= test-verlet.o \
          verlet.o \
          jpca15.o \
          kinds.o
@@ -22,11 +27,11 @@ OBJECTS2= test-verlet.o \
 
 %.o: %.mod
 
-$(TARGET1): $(OBJECTS1)
-	$(FC) $(FFLAGS) -o $(TARGET1) $(OBJECTS1)
+$(BIN_TARGET): $(BIN_OBJECTS)
+	$(FC) $(FFLAGS) -o $(BIN_TARGET) $(BIN_OBJECTS)
 
-$(TARGET2): $(OBJECTS2)
-	$(FC) $(FFLAGS) -o $(TARGET2) $(OBJECTS2)
+$(TEST_TARGET): $(TEST_OBJECTS)
+	$(FC) $(FFLAGS) -o $(TEST_TARGET) $(TEST_OBJECTS)
 
 main.o: main.F90  jpca15.o kinds.o verlet.o
 test-verlet.o: test-verlet.f95  jpca15.o kinds.o verlet.o
@@ -34,7 +39,7 @@ verlet.o: verlet.f95 kinds.o
 jpca15.o: jpca15.f kinds.o
 kinds.o: kinds.f95
 
-.PHONY: clean $(TARGET1) $(TARGET2) run
+.PHONY: clean $(BIN_TARGET) $(TEST_TARGET) run
 
 .SUFFIXES: .f95 .o
 .f95.o:
@@ -49,10 +54,10 @@ kinds.o: kinds.f95
 	$(FC) $(FFLAGS) -c -I. -o $*.o $*.f
 
 clean:
-	$(RM) $(TARGET1) $(TARGET2) *.mod *.o
+	$(RM) $(BIN_TARGET) $(TEST_TARGET) *.mod *.o
 
-run: clean $(TARGET1)
-	$(TARGET1)
+run: clean $(BIN_TARGET)
+	$(TBIN_ARGET)
 
-test: clean $(TARGET2)
-	$(TARGET2)
+test: clean $(TEST_TARGET)
+	$(TEST_TARGET)
