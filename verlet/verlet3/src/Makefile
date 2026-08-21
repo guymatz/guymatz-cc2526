@@ -15,33 +15,35 @@ FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
 #all: clean $(BIN_TARGET) tests
 
 BIN_TARGET = ../bin/verlet3
-TEST_TARGET = ../bin/test-verlet
+#TEST_TARGET = ../bin/test-verlet
 BIN_OBJECTS= main.o \
          verlet.o \
          jpca15.o \
          kinds.o
 
-TEST_OBJECTS= test-verlet.o \
-         verlet.o \
-         jpca15.o \
-         kinds.o
-         # verlet.o \
+#TEST_OBJECTS= test-verlet.o \
+#         verlet.o \
+#         jpca15.o \
+#         kinds.o
+#         # verlet.o \
 
 %.o: %.mod
 
-$(BIN_TARGET): $(BIN_OBJECTS)
+$(BIN_TARGET): libsut.a $(BIN_OBJECTS)
 	$(FC) $(FFLAGS) -o $(BIN_TARGET) $(BIN_OBJECTS)
 
-$(TEST_TARGET): $(TEST_OBJECTS)
-	$(FC) $(FFLAGS) -o $(TEST_TARGET) $(TEST_OBJECTS)
+#$(TEST_TARGET): $(TEST_OBJECTS)
+#	$(FC) $(FFLAGS) -o $(TEST_TARGET) $(TEST_OBJECTS)
 
 main.o: main.F90  jpca15.o kinds.o verlet.o
-test-verlet.o: test-verlet.f95  jpca15.o kinds.o verlet.o
+#test-verlet.o: test-verlet.f95  jpca15.o kinds.o verlet.o
 verlet.o: verlet.f95 kinds.o
 jpca15.o: jpca15.f kinds.o
 kinds.o: kinds.f95
 
-.PHONY: clean $(BIN_TARGET) $(TEST_TARGET) run
+all: clean $(BIN_TARGET) run
+
+#.PHONY: clean $(BIN_TARGET) $(TEST_TARGET) run
 
 .SUFFIXES: .f95 .o
 .f95.o:

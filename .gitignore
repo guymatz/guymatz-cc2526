@@ -1,7 +1,13 @@
 *.mod
 *.o
 a.out
+*.a
 **/bin/
+
+# For fortran testing with pfunit
+*.inc
+
+*.xyz
 
 *.pdf
 # LaTeX build artifacts
@@ -18,6 +24,3 @@ a.out
 *.nav
 *.snm
 *.aux
-
-# For fortran testing with pfunit
-*.inc
