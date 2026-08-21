@@ -7,10 +7,12 @@ FFLAGS = -g -fbacktrace -Wall
 
 PFUNIT_DIR = /usr/local/pfunit
 
-include $(PFUNIT_DIR)/PFUNIT/include/PFUNIT.mk
+LATEST_PFUNIT_DIR := $(lastword $(shell echo $(wildcard $(PFUNIT_DIR)/PFUNIT-4.*) | xargs -n1 | sort -V))
+include $(LATEST_PFUNIT_DIR)/include/PFUNIT.mk
+
 FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
 
-# all: TARGET1 TARGET2
+#all: clean $(BIN_TARGET) tests
 
 BIN_TARGET = ../bin/verlet3
 TEST_TARGET = ../bin/test-verlet
@@ -53,11 +55,24 @@ kinds.o: kinds.f95
 .f.o:
 	$(FC) $(FFLAGS) -c -I. -o $*.o $*.f
 
+libsut.a: $(BIN_OBJECTS) kinds.o 
+	$(AR) -r $@ $?
+
 clean:
-	$(RM) $(BIN_TARGET) $(TEST_TARGET) *.mod *.o
+	$(RM) $(BIN_TARGET) $(TEST_TARGET) libsut.a *.mod *.o tests tests.inc test_verlet.F90
 
 run: clean $(BIN_TARGET)
 	$(TBIN_ARGET)
 
-test: clean $(TEST_TARGET)
-	$(TEST_TARGET)
+#test: clean $(TEST_TARGET)
+#	$(TEST_TARGET)
+
+tests: libsut.a
+
+tests_TESTS := test_verlet.pf
+tests_REGISTRY :=
+tests_OTHER_SOURCES :=
+tests_OTHER_LIBRARIES := -L. -lsut
+tests_OTHER_INCS :=
+
+$(eval $(call make_pfunit_test,tests))

@@ -1,0 +1,23 @@
+@test
+subroutine test_eudist_p1_p2()
+   use kinds, ONLY: wp => dp
+   use verlet
+   use funit
+
+    real(KIND=wp), DIMENSION(3) :: p1, p2
+    p1 = (/3., 0., 0./)
+    p2 = (/0., 4., 0./)
+   @assertEqual(5., eudist(p1, p2), 'eudist(p1, p2)')
+end subroutine test_eudist_p1_p2
+
+@test
+subroutine test_eudist_p2_p1()
+   use kinds, ONLY: wp => dp
+   use verlet
+   use funit
+
+    real(KIND=wp), DIMENSION(3) :: p1, p2
+    p1 = (/3., 0., 0./)
+    p2 = (/0., 4., 0./)
+   @assertEqual(5., eudist(p2, p1), 'eudist(p2, p1)')
+end subroutine test_eudist_p2_p1
