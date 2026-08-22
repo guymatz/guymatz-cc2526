@@ -1,3 +1,14 @@
+# Necessary if the installation directory is not in PKG_CONFIG_PATH
+#install_dir := path/to/install_dir
+#export PKG_CONFIG_PATH := $(install_dir)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+
+# On some OS the pkgconfig file could be installed in lib64 instead of lib
+# export PKG_CONFIG_PATH := $(install_dir)/lib64/pkgconfig:$(PKG_CONFIG_PATH)
+
+STDLIB_CFLAGS := `pkg-config --cflags fortran_stdlib`
+STDLIB_LIBS := `pkg-config --libs fortran_stdlib`
+
+
 #FC=g95
 # THIS BREAKS LINKING
 #STDF= -std=f95
@@ -30,7 +41,7 @@ BIN_OBJECTS= main.o \
 %.o: %.mod
 
 $(BIN_TARGET): libsut.a $(BIN_OBJECTS)
-	$(FC) $(FFLAGS) -o $(BIN_TARGET) $(BIN_OBJECTS)
+	$(FC) $(FFLAGS) -o $(BIN_TARGET) $(BIN_OBJECTS) $(STDLIB_LIBS)
 
 #$(TEST_TARGET): $(TEST_OBJECTS)
 #	$(FC) $(FFLAGS) -o $(TEST_TARGET) $(TEST_OBJECTS)
@@ -47,15 +58,15 @@ all: clean $(BIN_TARGET) run
 
 .SUFFIXES: .f95 .o
 .f95.o:
-	$(FC) $(STDF) $(FFLAGS) -c -I. -o $*.o $*.f95
+	$(FC) $(STDF) $(FFLAGS) -c -I. -o $*.o $*.f95 $(STDLIB_CFLAGS) $(STDLIB_LIBS)
 
 .SUFFIXES: .F90 .o
 .F90.o:
-	$(FC) $(STDF) $(FFLAGS) -c -I. -o $*.o $*.F90
+	$(FC) $(STDF) $(FFLAGS) -c -I. -o $*.o $*.F90 $(STDLIB_CFLAGS) $(STDLIB_LIBS)
 
 .SUFFIXES: .f.o
 .f.o:
-	$(FC) $(FFLAGS) -c -I. -o $*.o $*.f
+	$(FC) $(FFLAGS) -c -I. -o $*.o $*.f $(STDLIB_CFLAGS) $(STDLIB_LIBS)
 
 libsut.a: $(BIN_OBJECTS) kinds.o 
 	$(AR) -r $@ $?
