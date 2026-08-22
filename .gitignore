@@ -6,9 +6,12 @@ a.out
 
 # For fortran testing with pfunit
 *.inc
+verlet/verlet3/tests/test_verlet
+verlet/verlet3/tests/test_verlet.F90
 
 *.xyz
 
+*.skim
 *.pdf
 # LaTeX build artifacts
 *.blg
