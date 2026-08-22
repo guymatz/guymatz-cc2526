@@ -2,7 +2,7 @@ LATEST_PFUNIT_DIR := $(lastword $(shell echo $(wildcard $(PFUNIT_DIR)/PFUNIT-4.*
 include $(LATEST_PFUNIT_DIR)/include/PFUNIT.mk
 
 #all: test_verlet broken_tests error_handling disabled_test
-all: test_verlet
+all: test_verlet run
 
 %.o : %.F90
 	$(FC) -c $(FFLAGS) $<
