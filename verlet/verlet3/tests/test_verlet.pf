@@ -2,7 +2,7 @@ module test_verlet
     use kinds, ONLY: wp => dp
     use verlet
     use funit
-    
+
     implicit none
 
     real(KIND=wp), DIMENSION(3, 3) :: x, v, f, fnext, points, forces
@@ -19,61 +19,33 @@ module test_verlet
     subroutine test_eudist_p1_p2()
         @assertEqual(20., eudist(x(1, :), x(2, :)), tolerance=tol)
     end subroutine test_eudist_p1_p2
-    
+
     @test
     subroutine test_eudist_p2_p1()
         @assertEqual(20., eudist(x(2, :), x(1, :)), tolerance=tol)
     end subroutine test_eudist_p2_p1
-    
-    ! 
+
+    !
     ! !! TESTS
-    ! 
+    !
     ! ! Initial locations & Distances
-    !     print *, "=========== Initial LOCATION"
-    !     print *, "Atom A: ", x(1, :)
-    !     print *, "Atom B: ", x(2, :)
-    !     print *, "Atom C: ", x(3, :)
-    !     print *, ""
-    !     print *, "=========== TEST eudist: Gets Euclidean distance between two atoms"
-    !     print *, 'eudist: A - B: ', eudist(x(1, :), x(2, :))
-    !     print *, 'eudist: A - C: ', eudist(x(1, :), x(3, :))
-    !     print *, 'eudist: B - C: ', eudist(x(2, :), x(3, :))
-    !     print *, ""
-    !     print *, "===========  TEST eudist_with_delta: Gets distance between two atoms after adding a small delta in each dimension" 
-    !     print *, "delta = ", delta
-    !     print *, "                        p1                            p2                       d"
-    ! 
-    ! ! Initial Distances w/ Delta
-    !     distance_with_delta = eudist_with_delta(x(1, :), x(2, :), delta, 1)
-    !     print *, 'dist w/ delta: A', x(1, 1), ' - B:', x(2, 1), ' -> d x', distance_with_delta
-    !     distance_with_delta = eudist_with_delta(x(1, :), x(2, :), delta, 2)
-    !     print *, 'dist w/ delta: A', x(1, 2), ' - B:', x(2, 2), ' -> d y', distance_with_delta
-    !     distance_with_delta = eudist_with_delta(x(1, :), x(2, :), delta, 3)
-    !     print *, 'dist w/ delta: A', x(1, 3), ' - B:', x(2, 3), ' -> d z', distance_with_delta
-    !     print *, ""
-    !     distance_with_delta = eudist_with_delta(x(1, :), x(3, :), delta, 1)
-    !     print *, 'dist w/ delta: A', x(1, 1), ' - C:', x(3, 1), ' -> d x', distance_with_delta
-    !     distance_with_delta = eudist_with_delta(x(1, :), x(3, :), delta, 2)
-    !     print *, 'dist w/ delta: A', x(1, 2), ' - C:', x(3, 2), ' -> d y', distance_with_delta
-    !     distance_with_delta = eudist_with_delta(x(1, :), x(3, :), delta, 3)
-    !     print *, 'dist w/ delta: A', x(1, 3), ' - C:', x(3, 3), ' -> d z', distance_with_delta
-    !     print *, ""
-    !     distance_with_delta = eudist_with_delta(x(2, :), x(3, :), delta, 1)
-    !     print *, 'dist w/ delta: B', x(2, 1), ' - C:', x(3, 1), ' -> d x', distance_with_delta
-    !     distance_with_delta = eudist_with_delta(x(2, :), x(3, :), delta, 2)
-    !     print *, 'dist w/ delta: B', x(2, 2), ' - C:', x(3, 2), ' -> d y', distance_with_delta
-    !     distance_with_delta = eudist_with_delta(x(2, :), x(3, :), delta, 3)
-    !     print *, 'dist w/ delta: B', x(2, 3), ' - C:', x(3, 3), ' -> d z', distance_with_delta
-    ! 
-    ! ! Test get_ser
-    !     ! subroutine get_ser(p1, p2, p3, ser)
-    !     print *, ""
-    !     print *, "======== Test get_ser: Gets distances between 3 atoms as (AB, AC, BC)"
-    !     CALL get_ser(x(1, :), x(2, :), x(3, :), ser)
-    !     do i = 1, 3, 1
-    !         print *, "Distance :", i, ":", ser(i)
-    !     end do
-    ! 
+    @test
+    subroutine test_eudist_with_delta()
+        @assertEqual(19.5, eudist_with_delta(x(1, :), x(2, :), delta, 1), tolerance=tol)
+        @assertEqual(20.746, eudist_with_delta(x(1, :), x(3, :), delta, 2), tolerance=tol)
+        @assertEqual(0.893, eudist_with_delta(x(2, :), x(3, :), delta, 3), tolerance=tol)
+    end subroutine test_eudist_with_delta
+
+    @test
+    subroutine test_get_ser()
+        call get_ser(x(1, :), x(2, :), x(3, :), ser)
+        @assertEqual((/20.0_wp, 20.74_wp, 0.74_wp/), ser, tolerance=tol)
+    end subroutine test_get_ser
+
+!    subroutine test_get_delta_ser()
+!        call get_delta_ser(x(1, :), x(2, :), x(3, :), delta, ser)
+!        @assertEqual((/20.0_wp, 20.74_wp, 0.74_wp/), ser, tolerance=tol)
+!    end subroutine test_get_delta_ser
     ! ! Test get_delta_ser
     !     ! subroutine get_delta_ser(p1, p2, p3, delta, ser)
     !     print *, ""
@@ -89,40 +61,20 @@ module test_verlet
     !         print *, "    Location :", i, ":", x(i, :)
     !         print *, "    Distance :", i, ":", ser_delta(i, :)
     !     end do
-    ! 
-    ! ! Test compute_force
-    !     print *, "", "======== TEST compute_force: "
-    !     print *, " Initial forces:  Just to show that we are starting from (0, 0, 0)"
-    !     print *, "                             x                             y                   z"
-    !     do i = 1, 3, 1
-    !         PRINT *, "Atom #", i, ":", forces(i, :)
-    !     end do
-    ! 
-    !     call compute_force(x, delta, forces)
-    !     print *, "", "======== Computed Forces: Uses jpca15 to get `er` and `delta_er` to compute  (delta_er - er) / delta"
-    !     print *, "delta = ", delta
-    !     print *, "                             x                             y                   z"
-    !     do i = 1, 3, 1
-    !         PRINT *, "Atom #", i, ":", forces(i, :)
-    !     end do
-    ! 
-    ! ! clean up
-    !     deallocate (x)
-    !     deallocate (v)
-    !     deallocate (f)
-    !     deallocate (fnext)
-    !     deallocate (mass)
-    ! 
-    ! end program
+
+    @test
+    subroutine test_compute_force()
+        call compute_force(x, delta, forces)
+        @assertEqual((/7.5123e-007, -6.7676E-009, -6.7677E-009/), forces(1, :), tolerance=tol)
+        @assertEqual((/123.386101, -6.26126, -6.26126/), forces(2, :), tolerance=tol)
+        @assertEqual((/-11.178783, -6.26126, -6.26126/), forces(3, :), tolerance=tol)
+    end subroutine test_compute_force
 
     @before
     subroutine setup()
-       use kinds, ONLY: wp => dp
-        
-    ! variables
-        !real(KIND=wp), DIMENSION(3) :: distance_with_delta
-    
-    ! Initialization
+        use kinds, ONLY: wp => dp
+
+        ! Initialization
         tol = 0.0001_wp
         tau = 0.2_wp                                     ! tau
         delta = 0.5_wp                                          ! delta
@@ -142,5 +94,5 @@ module test_verlet
         v(3, :) = (/0.0, 0.0, 0.0/)        ! m, x, y, z, vx, vy, vz
         print *, "SETUP completed"
     end subroutine setup
-    
+
 end module test_verlet
