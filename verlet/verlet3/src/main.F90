@@ -82,10 +82,7 @@ program main
             CALL global_logger%log_warning(log_msg)
             read (arg, '(f33.32)') delta_cli
             IF (delta_cli <= 0.0) THEN
-                write(log_msg, '(A)') "Delta too small!"
-                CALL global_logger%log_warning(log_msg)
-                write(log_msg,'(A,I0)') "main +", __LINE__
-                CALL global_logger%log_warning(log_msg)
+                print *, "Delta too small!"
                 STOP __LINE__ - 1
             END IF
         ELSE IF (arg == "-s") THEN

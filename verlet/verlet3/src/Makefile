@@ -46,10 +46,10 @@ $(BIN_TARGET): libsut.a $(BIN_OBJECTS)
 #$(TEST_TARGET): $(TEST_OBJECTS)
 #	$(FC) $(FFLAGS) -o $(TEST_TARGET) $(TEST_OBJECTS)
 
-main.o: main.F90  jpca15.o kinds.o verlet.o
+main.o: main.F90  jpca15.o verlet.o
 #test-verlet.o: test-verlet.f95  jpca15.o kinds.o verlet.o
 verlet.o: verlet.f95 kinds.o
-jpca15.o: jpca15.f kinds.o
+jpca15.o: jpca15.f95 kinds.o
 kinds.o: kinds.f95
 
 all: clean $(BIN_TARGET) run
@@ -82,7 +82,7 @@ run: clean $(BIN_TARGET)
 
 tests: libsut.a
 
-tests_TESTS := test_verlet.pf
+tests_TESTS := $(wildcard *.pf)
 tests_REGISTRY :=
 tests_OTHER_SOURCES :=
 tests_OTHER_LIBRARIES := -L. -lsut

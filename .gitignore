@@ -7,7 +7,8 @@ a.out
 # For fortran testing with pfunit
 *.inc
 verlet/verlet3/tests/test_verlet
-verlet/verlet3/tests/test_verlet.F90
+verlet/verlet3/tests/test_jpca15
+verlet/verlet3/tests/*.F90
 
 *.xyz
 

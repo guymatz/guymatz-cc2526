@@ -1,6 +1,7 @@
 module verlet
 
     ! use kinds, ONLY: wp => dp
+    use jpca15_mod
     ! implicit none
     ! private
     ! public :: eudist, eudist_with_delta, compute_force, get_ser, get_delta_ser

@@ -92,7 +92,7 @@ module test_verlet
         x(3, :) = (/10.74, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
         !x(3, :) = (/11.0, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
         v(3, :) = (/0.0, 0.0, 0.0/)        ! m, x, y, z, vx, vy, vz
-        print *, "SETUP completed"
+!        print *, "SETUP completed"
     end subroutine setup
 
 end module test_verlet

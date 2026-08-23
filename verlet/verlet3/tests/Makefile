@@ -2,19 +2,22 @@ LATEST_PFUNIT_DIR := $(lastword $(shell echo $(wildcard $(PFUNIT_DIR)/PFUNIT-4.*
 include $(LATEST_PFUNIT_DIR)/include/PFUNIT.mk
 
 #all: test_verlet broken_tests error_handling disabled_test
-all: test_verlet run
+all: test_verlet test_jpca15 run
 
 %.o : %.F90
 	$(FC) -c $(FFLAGS) $<
 
 FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
-FFLAGS += -I../src
+FFLAGS += -I../src -Wno-underflow
 
 #test_verlet_TESTS := test_verlet.pf test_verlet_fixture.pf
 test_verlet_TESTS := test_verlet.pf
 test_verlet_OTHER_LIBRARIES := -L../src -lsut
 $(eval $(call make_pfunit_test,test_verlet))
 
+test_jpca15_TESTS := test_jpca15.pf
+test_jpca15_OTHER_LIBRARIES := -L../src -lsut
+$(eval $(call make_pfunit_test,test_jpca15))
 
 #broken_tests_TESTS := test_failing.pf
 #broken_tests_OTHER_LIBRARIES := -L../src -lsut
@@ -35,7 +38,8 @@ $(eval $(call make_pfunit_test,test_verlet))
 
 run:
 	$(info *********   TEST OUTPUT   **************)
-	./test_verlet -v
+	./test_verlet
+	./test_jpca15
 
 
 clean:
@@ -43,3 +47,4 @@ clean:
 	$(RM) test_verlet.F90 test_failing.F90 test_error_handling.F90 test_disable.F90
 	$(RM) test_verlet_fixture.F90
 	$(RM) test_verlet broken_tests error_handling disabled_test
+	$(RM) test_jpca15 test_jpca15.F90 

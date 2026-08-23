@@ -1,13 +1,15 @@
-! ************************************************************************
-      subroutine jpca15(ser, e, der)
-! ************************************************************************
-! *     Takes as input argument a vector with the three interatomic
-! *     distances (AB, AC, and BC) and returns as output the potential
-! *     energy and the vector of the derivatives of the potential with
-! *     respect to the interatomic distances (AB, AC, and BC). Distances
-! *     are in bohr and energies are in eV.
-! ************************************************************************
-! srampino adapts to standard ABC
+module jpca15_mod
+   contains
+   ! ************************************************************************
+   subroutine jpca15(ser, e, der)
+   ! ************************************************************************
+   ! *     Takes as input argument a vector with the three interatomic
+   ! *     distances (AB, AC, and BC) and returns as output the potential
+   ! *     energy and the vector of the derivatives of the potential with
+   ! *     respect to the interatomic distances (AB, AC, and BC). Distances
+   ! *     are in bohr and energies are in eV.
+   ! ************************************************************************
+   ! srampino adapts to standard ABC
       implicit real * 8 (a-h,o-z)
       dimension ser(3), der(3)
       r12=ser(1)
@@ -23,15 +25,15 @@
       der(2)=d13+der(2)
       der(3)=d23+der(3)
       return
-      end
-! ************************************************************************
-      subroutine diat12(r,ener,der)
-! ************************************************************************
-! *     This subroutine computes the energies of a diatomic potential
-! *     fitted to    10 points
-! *     rms =      0.12856952 kcal/mol
-! *     emax =      0.32188730 kcal/mol
-! ************************************************************************
+   end subroutine jpca15
+   ! ************************************************************************
+   subroutine diat12(r,ener,der)
+   ! ************************************************************************
+   ! *     This subroutine computes the energies of a diatomic potential
+   ! *     fitted to    10 points
+   ! *     rms =      0.12856952 kcal/mol
+   ! *     emax =      0.32188730 kcal/mol
+   ! ************************************************************************
       implicit real*8 (a-h,o-z)
       dimension cf(  6)
       data cf(  1)/0.877523796221D+00/
@@ -54,19 +56,22 @@
          der=der+(i-1)*cf(i)*dux
          dux=dux*eux
          ener=ener+cf(i)*dux
-    1 continue
+   1  continue
       der=der*(1.d0-vex1*r)*cux
       der=der-cf(1)*(vex2+aux)*bux
+      !print *, "diat12 - r:", r
+      !print *, "diat12 - ener", ener
+      !print *, "diat12 - der", der
       return
-      end
-! *************************************************************
-      subroutine triaaa(r12,r13,r23,ener,der)
-! *************************************************************
-! *     This subroutine computes the energies of a 3D PES
-! *     for the AAA system class fitted to  276 points
-! *     rms =      1.75035364 kcal/mol
-! *     emax =     12.92836324 kcal/mol
-! *************************************************************
+   end subroutine diat12
+   ! *************************************************************
+   subroutine triaaa(r12,r13,r23,ener,der)
+   ! *************************************************************
+   ! *     This subroutine computes the energies of a 3D PES
+   ! *     for the AAA system class fitted to  276 points
+   ! *     rms =      1.75035364 kcal/mol
+   ! *     emax =     12.92836324 kcal/mol
+   ! *************************************************************
       implicit real*8(a-h,o-z)
       dimension i1(   43),i2(   43),i3(   43),i4(   43),cf(   43)
       dimension f12(0: 8),f13(0: 8),f23(0: 8)
@@ -168,7 +173,7 @@
          f12(i)=f12(i-1)*bux12
          f13(i)=f13(i-1)*bux13
          f23(i)=f23(i-1)*bux23
-1     continue
+   1  continue
       ener = 0.d0
       der12 = 0.d0
       der13 = 0.d0
@@ -230,9 +235,15 @@
          der12=der12+cf(l)*dux12
          der13=der13+cf(l)*dux13
          der23=der23+cf(l)*dux23
-    2 continue
-       der(1)=der12*(1.d0-vex1*r12)*dexp(-vex1*r12)
-       der(2)=der13*(1.d0-vex1*r13)*dexp(-vex1*r13)
-       der(3)=der23*(1.d0-vex1*r23)*dexp(-vex1*r23)
+   2  continue
+      der(1)=der12*(1.d0-vex1*r12)*dexp(-vex1*r12)
+      der(2)=der13*(1.d0-vex1*r13)*dexp(-vex1*r13)
+      der(3)=der23*(1.d0-vex1*r23)*dexp(-vex1*r23)
+      !print *, "triaaa - r12:", r12
+      !print *, "triaaa - r13:", r13
+      !print *, "triaaa - r23:", r23
+      !print *, "triaaa - ener", ener
+      !print *, "triaaa - der", der
       return
-      end
+   end subroutine triaaa
+ end module jpca15_mod

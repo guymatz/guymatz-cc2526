@@ -1,0 +1,83 @@
+module test_jpca15
+    use kinds, ONLY: wp => dp
+    use jpca15_mod
+    use funit
+
+    implicit none
+
+    ! Common
+    real(KIND=wp) :: tol ! tolerance for assertEqual tests
+    real(KIND=wp), DIMENSION(3) :: der_3d
+    ! for jpca15
+    real(KIND=wp), DIMENSION(3) :: ser
+    real(KIND=wp) :: e, jpca15_e
+    real(KIND=wp), DIMENSION(3) :: jpca15_der
+    ! for diat12
+    real(KIND=wp) :: diat12_r, ener, der_1d
+    real(KIND=wp) :: diat12_ener, diat12_der
+    ! for triaaa
+    real(KIND=wp), DIMENSION(3) :: triaaa_der
+    real(KIND=wp) :: triaaa_r12, triaaa_r13, triaaa_r23, triaaa_ener
+
+    contains
+
+    @test
+    subroutine test_jpca15_sub()
+        call jpca15(ser, e, der_3d)
+        @assertEqual(jpca15_e, e, tolerance=tol)
+!        print *, "JPCA15_DER:", jpca15_der
+!        print *, "E:", der_3d
+        @assertEqual(jpca15_der, der_3d, tolerance=tol)
+    end subroutine test_jpca15_sub
+
+    @test
+    subroutine test_diat12()
+        call diat12(diat12_r, ener, der_1d)
+!        print *, "DIAT12_r:", diat12_r
+!        print *, "DIAT12_ener:", diat12_ener
+!        print *, "ENER:", ener
+!        print *, "DIAT12_der:", diat12_der
+!        print *, "DER_1D:", der_1d
+        @assertEqual(diat12_ener, ener, tolerance=tol)
+        @assertEqual(diat12_der, der_1d, tolerance=tol)
+    end subroutine test_diat12
+
+    @test
+    subroutine test_triaaa()
+        call triaaa(triaaa_r12, triaaa_r13, triaaa_r23, ener, der_3d)
+!        print *, "TRIAAA_r12:", triaaa_r12
+!        print *, "TRIAAA_r13:", triaaa_r13
+!        print *, "TRIAAA_r23:", triaaa_r23
+!        print *, "TRIAAA_ENER:", triaaa_ener
+!        print *, "ENER:", ener
+!        print *, "TRIAAA_DER:", triaaa_der
+!        print *, "DER_3D:", der_3d
+        @assertEqual(triaaa_ener, ener, tolerance=tol)
+        @assertEqual(triaaa_der, der_3d, tolerance=tol)
+    end subroutine test_triaaa
+
+    @before
+    subroutine setup()
+        use kinds, ONLY: wp => dp
+
+        ! Initialization
+        tol = 0.01_wp
+        ser = (/0.0028739_wp, 0.0098706_wp, 0.0064505_wp/)
+        ! for jpca15 subroutine
+        jpca15_e = 14331.822
+        jpca15_der = (/-106248.97330438906, -9008.7944248419753, -21091.877752197026/)
+        ! for diat12 subroutine
+        diat12_r = 4.9406564584124654E-3
+        diat12_ener = 176.359788 
+        diat12_der = -35951.612262
+        ! for triaaa subroutine
+        triaaa_r12 = 0.0028739_wp
+        triaaa_r13 = 0.0098706_wp 
+        triaaa_r23 = 0.0064505_wp
+        triaaa_ener = -4.3671538E-003_wp
+        triaaa_der = (/0.272080_wp, 0.1404722_wp, 0.2017398_wp/)
+
+!        print *, "SETUP completed"
+    end subroutine setup
+
+end module test_jpca15
