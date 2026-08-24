@@ -7,16 +7,21 @@ all: test_verlet test_jpca15 run
 %.o : %.F90
 	$(FC) -c $(FFLAGS) $<
 
+#STDLIB_CFLAGS := `pkg-config --cflags fortran_stdlib`
+STDLIB_CFLAGS := $(shell pkg-config --cflags fortran_stdlib)
+STDLIB_LIBS := $(shell pkg-config --libs fortran_stdlib)
+
 FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
-FFLAGS += -I../src -Wno-underflow
+FFLAGS += -I../src $(STDLIB_LIBS) $(STDLIB_CFLAGS)
+#FFLAGS += -I../src -Wno-underflow
 
 #test_verlet_TESTS := test_verlet.pf test_verlet_fixture.pf
 test_verlet_TESTS := test_verlet.pf
-test_verlet_OTHER_LIBRARIES := -L../src -lsut
+test_verlet_OTHER_LIBRARIES := -L../src -lsut $(STDLIB_LIBS)
 $(eval $(call make_pfunit_test,test_verlet))
 
 test_jpca15_TESTS := test_jpca15.pf
-test_jpca15_OTHER_LIBRARIES := -L../src -lsut
+test_jpca15_OTHER_LIBRARIES := -L../src -lsut $(STDLIB_LIBS)
 $(eval $(call make_pfunit_test,test_jpca15))
 
 #broken_tests_TESTS := test_failing.pf
@@ -38,8 +43,8 @@ $(eval $(call make_pfunit_test,test_jpca15))
 
 run:
 	$(info *********   TEST OUTPUT   **************)
-	./test_verlet
-	./test_jpca15
+	./test_verlet -v
+	./test_jpca15 -v
 
 
 clean:

@@ -2,6 +2,7 @@ module test_jpca15
     use kinds, ONLY: wp => dp
     use jpca15_mod
     use funit
+    use stdlib_logger
 
     implicit none
 
@@ -19,39 +20,74 @@ module test_jpca15
     real(KIND=wp), DIMENSION(3) :: triaaa_der
     real(KIND=wp) :: triaaa_r12, triaaa_r13, triaaa_r23, triaaa_ener
 
+    !  for logging
+    character(len=100) :: log_msg
+
     contains
 
     @test
     subroutine test_jpca15_sub()
+        write(log_msg, '(A, 3F15.5)') "=== Testing JPCA15_SUB:", ser
+        call global_logger%log_warning(log_msg)
+
         call jpca15(ser, e, der_3d)
+
+        write(log_msg, '(A, F15.5)') "JPCA15_e:", e
+        call global_logger%log_warning(log_msg)
         @assertEqual(jpca15_e, e, tolerance=tol)
-!        print *, "JPCA15_DER:", jpca15_der
-!        print *, "E:", der_3d
+
+        write(log_msg, '(A, 3F15.5)') "JPCA15_der:", der_3d
+        call global_logger%log_warning(log_msg)
         @assertEqual(jpca15_der, der_3d, tolerance=tol)
     end subroutine test_jpca15_sub
 
     @test
     subroutine test_diat12()
+        write(log_msg, '(A, F15.5)') "=== Testing diat12:", diat12_r
+        call global_logger%log_warning(log_msg)
+
         call diat12(diat12_r, ener, der_1d)
-!        print *, "DIAT12_r:", diat12_r
-!        print *, "DIAT12_ener:", diat12_ener
-!        print *, "ENER:", ener
-!        print *, "DIAT12_der:", diat12_der
-!        print *, "DER_1D:", der_1d
+
+        ! write(log_msg, '(A, F15.5)') "DIAT12_ener:", diat12_ener
+        ! call global_logger%log_warning(log_msg)
+
+        write(log_msg, '(A, F15.5)') "ENER:", ener
+        call global_logger%log_warning(log_msg)
+
+        ! write(log_msg, '(A, F15.5)') "DIAT12_der:", diat12_der
+        ! call global_logger%log_warning(log_msg)
+
+        write(log_msg, '(A, F15.5)') "DER_1D:", der_1d
+        call global_logger%log_warning(log_msg)
         @assertEqual(diat12_ener, ener, tolerance=tol)
         @assertEqual(diat12_der, der_1d, tolerance=tol)
     end subroutine test_diat12
 
     @test
     subroutine test_triaaa()
+        write(log_msg, '(A, F15.5, F15.5, F15.5)') "=== Testing triaaa_r12:", triaaa_r12, triaaa_r13, triaaa_r23
+        call global_logger%log_warning(log_msg)
+
         call triaaa(triaaa_r12, triaaa_r13, triaaa_r23, ener, der_3d)
-!        print *, "TRIAAA_r12:", triaaa_r12
-!        print *, "TRIAAA_r13:", triaaa_r13
-!        print *, "TRIAAA_r23:", triaaa_r23
-!        print *, "TRIAAA_ENER:", triaaa_ener
-!        print *, "ENER:", ener
-!        print *, "TRIAAA_DER:", triaaa_der
-!        print *, "DER_3D:", der_3d
+
+        ! write(log_msg, '(A, F15.5)') "TRIAAA_r12:", triaaa_r12
+        ! call global_logger%log_warning(log_msg)
+        ! write(log_msg, '(A, F15.5)') "TRIAAA_r13:", triaaa_r13
+        ! call global_logger%log_warning(log_msg)
+        ! write(log_msg, '(A, F15.5)') "TRIAAA_r23:", triaaa_r23
+        ! call global_logger%log_warning(log_msg)
+
+        ! write(log_msg, '(A, F15.5)') "TRIAAA_ENER:", triaaa_ener
+        ! call global_logger%log_warning(log_msg)
+
+        write(log_msg, '(A, F15.5)') "ENER:", ener
+        call global_logger%log_warning(log_msg)
+
+        ! write(log_msg, '(A, 3F15.5)') "TRIAAA_DER:", triaaa_der
+        ! call global_logger%log_warning(log_msg)
+
+        write(log_msg, '(A, 3F15.5)') "DER_3D:", der_3d
+        call global_logger%log_warning(log_msg)
         @assertEqual(triaaa_ener, ener, tolerance=tol)
         @assertEqual(triaaa_der, der_3d, tolerance=tol)
     end subroutine test_triaaa
@@ -77,7 +113,11 @@ module test_jpca15
         triaaa_ener = -4.3671538E-003_wp
         triaaa_der = (/0.272080_wp, 0.1404722_wp, 0.2017398_wp/)
 
-!        print *, "SETUP completed"
+        call global_logger%configure(indent=.true., max_width=100)
+        call global_logger%configure(level = ALL_LEVEL)
+
+        write(log_msg, '(A, F15.5)') "jpca15 SETUP completed"
+        call global_logger%log_warning(log_msg)
     end subroutine setup
 
 end module test_jpca15
